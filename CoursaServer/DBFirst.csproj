@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ContentType.cs" />
+    <Compile Remove="Models\Coupon.cs" />
+    <Compile Remove="Models\Course.cs" />
+    <Compile Remove="Models\Enrollment.cs" />
+    <Compile Remove="Models\Lesson.cs" />
+    <Compile Remove="Models\Owner.cs" />
+    <Compile Remove="Models\Progress.cs" />
+    <Compile Remove="Models\Skill.cs" />
+    <Compile Remove="Models\User.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -16,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Repository\Repository.csproj" />
   </ItemGroup>
 
 </Project>

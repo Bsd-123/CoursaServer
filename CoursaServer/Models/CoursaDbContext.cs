@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-
+using Repository.Entities;
 namespace DBFirst.Models;
 
 public partial class CoursaDbContext : DbContext
@@ -281,6 +281,9 @@ public partial class CoursaDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("regDate");
+            entity.Property(e => e.Role)
+                .HasMaxLength(50)
+                .HasColumnName("role");
         });
 
         OnModelCreatingPartial(modelBuilder);

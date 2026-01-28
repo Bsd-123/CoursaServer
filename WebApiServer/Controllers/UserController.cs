@@ -10,9 +10,9 @@ namespace WebApiServer.Controllers
     {
         // GET: api/<UserController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return null;
         }
 
         // GET api/<UserController>/5
