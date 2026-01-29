@@ -32,15 +32,19 @@ namespace WebApiServer.Controllers
 
         // POST api/<ContentTypeController>
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public ContentTypeDto Post([FromForm] ContentTypeDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if(value.FileImage!= null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
+            
             return service.AddItem(value);
         }
 

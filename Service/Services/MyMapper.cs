@@ -14,13 +14,14 @@ namespace Service.Services
         string path = Directory.GetCurrentDirectory() + "\\images\\";
         public MyMapper()
         {
-
-
+            CreateMap<ContentType, ContentTypeDto>().ForMember("DisplayIcon", x => x.MapFrom(y => fromStringToByte(y.DisplayIcon)));
+            CreateMap<ContentTypeDto, ContentType>().ForMember("DisplayIcon", x => x.MapFrom(y => y.FileImage.FileName));
             CreateMap<Owner, OwnerDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
             CreateMap<OwnerDto, Owner>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
         }
         public byte[] fromStringToByte(string mypath)
         {
+            if (string.IsNullOrEmpty(mypath)) return null;
             return File.ReadAllBytes(path + mypath);
         }
     }

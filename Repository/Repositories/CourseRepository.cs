@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class CourseRepository:IRepository<Course>
+    public class CourseRepository:IRepository<Course>
     {
         private readonly IContext _context;
         public CourseRepository(IContext context)
@@ -17,7 +17,7 @@ namespace Repository.Repositories
         }
         public Course AddItem(Course item)
         {
-            _context.Courses.ToList().Add(item);
+            _context.Courses.Add(item);
 
             _context.save();
             return item;
@@ -25,7 +25,7 @@ namespace Repository.Repositories
 
         public void DeleteItem(int id)
         {
-            _context.Courses.ToList().Remove(GetById(id));
+            _context.Courses.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +36,7 @@ namespace Repository.Repositories
 
         public Course GetById(int id)
         {
-            return _context.Courses.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.Courses.FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, Course item)

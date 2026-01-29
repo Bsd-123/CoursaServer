@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class CouponRepository:IRepository<Coupon>
+    public class CouponRepository:IRepository<Coupon>
     {
         private readonly IContext _context;
         public CouponRepository(IContext context)
@@ -17,7 +17,7 @@ namespace Repository.Repositories
         }
         public Coupon AddItem(Coupon item)
         {
-            _context.Coupons.ToList().Add(item);
+            _context.Coupons.Add(item);
 
             _context.save();
             return item;
@@ -25,7 +25,7 @@ namespace Repository.Repositories
 
         public void DeleteItem(int id)
         {
-            _context.Coupons.ToList().Remove(GetById(id));
+            _context.Coupons.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +36,7 @@ namespace Repository.Repositories
 
         public Coupon GetById(int id)
         {
-            return _context.Coupons.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.Coupons.FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, Coupon item)

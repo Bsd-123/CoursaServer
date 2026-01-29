@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class SkillRepository:IRepository<Skill>
+    public class SkillRepository:IRepository<Skill>
     {
         private readonly IContext _context;
         public SkillRepository(IContext context)
@@ -17,7 +17,7 @@ namespace Repository.Repositories
         }
         public Skill AddItem(Skill item)
         {
-            _context.Skills.ToList().Add(item);
+            _context.Skills.Add(item);
 
             _context.save();
             return item;
@@ -25,7 +25,7 @@ namespace Repository.Repositories
 
         public void DeleteItem(int id)
         {
-            _context.Skills.ToList().Remove(GetById(id));
+            _context.Skills.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +36,7 @@ namespace Repository.Repositories
 
         public Skill GetById(int id)
         {
-            return _context.Skills.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.Skills.FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, Skill item)

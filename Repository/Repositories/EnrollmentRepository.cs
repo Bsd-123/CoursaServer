@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class EnrollmentRepository:IRepository<Enrollment>
+    public class EnrollmentRepository:IRepository<Enrollment>
     {
         private readonly IContext _context;
         public EnrollmentRepository(IContext context)
@@ -17,7 +17,7 @@ namespace Repository.Repositories
         }
         public Enrollment AddItem(Enrollment item)
         {
-            _context.Enrollments.ToList().Add(item);
+            _context.Enrollments.Add(item);
 
             _context.save();
             return item;
@@ -25,7 +25,7 @@ namespace Repository.Repositories
 
         public void DeleteItem(int id)
         {
-            _context.Enrollments.ToList().Remove(GetById(id));
+            _context.Enrollments.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +36,7 @@ namespace Repository.Repositories
         // to ask the teacher
         public Enrollment GetById(int id)
         {
-            return _context.Enrollments.ToList().FirstOrDefault(x => x.CourseId == id);
+            return _context.Enrollments.FirstOrDefault(x => x.CourseId == id);
         }
 
         public void UpdateItem(int id, Enrollment item)

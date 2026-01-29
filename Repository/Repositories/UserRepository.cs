@@ -17,7 +17,7 @@ namespace Repository.Repositories
         }
         public User AddItem(User item)
         {
-            _context.Users.ToList().Add(item);
+            _context.Users.Add(item);
 
             _context.save();
             return item;
@@ -25,7 +25,7 @@ namespace Repository.Repositories
 
         public void DeleteItem(int id)
         {
-            _context.Users.ToList().Remove(GetById(id));
+            _context.Users.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +36,7 @@ namespace Repository.Repositories
 
         public User GetById(int id)
         {
-            return _context.Users.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.Users.FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, User item)

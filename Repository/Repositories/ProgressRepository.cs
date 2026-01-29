@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class ProgressRepository:IRepository<Progress>
+    public class ProgressRepository:IRepository<Progress>
     {
         private readonly IContext _context;
         public ProgressRepository(IContext context)
@@ -17,14 +17,14 @@ namespace Repository.Repositories
         }
         public Progress AddItem(Progress item)
         {
-            _context.Progresses.ToList().Add(item);
+            _context.Progresses.Add(item);
             _context.save();
             return item;
         }
 
         public void DeleteItem(int id)
         {
-            _context.Progresses.ToList().Remove(GetById(id));
+            _context.Progresses.Remove(GetById(id));
             _context.save();
         }
 
@@ -35,7 +35,7 @@ namespace Repository.Repositories
         //to ask the teacher
         public Progress GetById(int id)
         {
-            return _context.Progresses.ToList().FirstOrDefault(x => x.UserId == id && x.LessonId == id);
+            return _context.Progresses.FirstOrDefault(x => x.UserId == id && x.LessonId == id);
         }
 
         public void UpdateItem(int id, Progress item)

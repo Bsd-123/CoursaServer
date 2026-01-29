@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
+using Repository.Interfaces;
 namespace DBFirst.Models;
 
-public partial class CoursaDbContext : DbContext
+public partial class CoursaDbContext : DbContext , IContext
 {
     public CoursaDbContext()
     {
@@ -33,6 +34,10 @@ public partial class CoursaDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public void save()
+    {
+        SaveChanges();
+    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=coursaDB;trusted_connection=true;TrustServerCertificate=True");

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    internal class ContentTypeRepository: IRepository<ContentType>
+    public class ContentTypeRepository: IRepository<ContentType>
     {
         private readonly IContext _context;
         public ContentTypeRepository(IContext context)
@@ -17,15 +17,14 @@ namespace Repository.Repositories
         }
         public ContentType AddItem(ContentType item)
         {
-            _context.ContentTypes.ToList().Add(item);
-
+            _context.ContentTypes.Add(item);
             _context.save();
             return item;
         }
 
         public void DeleteItem(int id)
         {
-            _context.ContentTypes.ToList().Remove(GetById(id));
+            _context.ContentTypes.Remove(GetById(id));
             _context.save();
         }
 
@@ -36,7 +35,7 @@ namespace Repository.Repositories
 
         public ContentType GetById(int id)
         {
-            return _context.ContentTypes.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.ContentTypes.FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, ContentType item)
