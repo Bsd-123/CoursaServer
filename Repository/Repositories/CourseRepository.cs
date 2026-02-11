@@ -43,7 +43,14 @@ namespace Repository.Repositories
         {
             var Course = GetById(id);
             Course.Name = item.Name;
-
+            Course.Status = item.Status;
+            Course.Owner  = item.Owner; 
+            Course.Description = item.Description;
+            Course.Price = item.Price;
+            Course.Image = item.Image;
+            Course.OwnerId = item.OwnerId;
+            Course.Skill = item.Skill;
+            Course.SkillId = item.SkillId;
             _context.save();
         }
     }

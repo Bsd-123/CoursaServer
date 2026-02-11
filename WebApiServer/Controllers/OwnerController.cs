@@ -31,15 +31,27 @@ namespace WebApiServer.Controllers
 
         // POST api/<OwnerController>
         [HttpPost]
-        public void Post([FromBody] OwnerDto value)
+        public void Post([FromForm] OwnerDto value)
         {
+            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                value.FileImage.CopyTo(fs);
+                fs.Close();
+            }
             service.AddItem(value);
         }
 
         // PUT api/<OwnerController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] OwnerDto value)
+        public void Put(int id, [FromForm] OwnerDto value)
         {
+            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                value.FileImage.CopyTo(fs);
+                fs.Close();
+            }
             service.UpdateItem(id, value);
         }
 

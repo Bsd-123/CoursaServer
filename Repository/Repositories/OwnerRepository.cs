@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -36,14 +37,18 @@ namespace Repository.Repositories
 
         public Owner GetById(int id)
         {
-            return _context.Owners.FirstOrDefault(x => x.Id == id);
+            return _context.Owners.Include(o => o.User).FirstOrDefault(x => x.Id == id);
         }
 
         public void UpdateItem(int id, Owner item)
         {
             var Owner = GetById(id);
             Owner.OwnerName = item.OwnerName;
-
+            Owner.PaymentNumber = item.PaymentNumber;
+            Owner.Percentage = item.Percentage;
+            Owner.Image = item.Image;
+            Owner.User = item.User;
+            Owner.UserId = item.UserId;
             _context.save();
         }
     }

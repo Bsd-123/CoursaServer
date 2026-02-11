@@ -17,6 +17,8 @@ public partial class Owner
 
     public string? PaymentNumber { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public virtual User User { get; set; } = null!;

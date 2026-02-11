@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Service.Dto;
+using Service.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,36 @@ namespace WebApiServer.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IService<UserDto> service;
         // GET: api/<UserController>
         [HttpGet]
-        public List<string> Get()
+        public List<UserDto> Get()
         {
-            return null;
+            return service.GetAll();
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public UserDto Get(int id)
         {
-            return "value";
+            return service.GetById(id);
         }
 
-        // POST api/<UserController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] UserDto value)
         {
+            service.UpdateItem(id,value);
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var value = service.GetById(id);
+            value.Role = "Delete";
+            service.UpdateItem(id, value);
         }
     }
 }

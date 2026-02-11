@@ -14,20 +14,30 @@ namespace Service.Services
     public class OwnerService : IService<OwnerDto>
     {
         private readonly IRepository<Owner> repository;
+        private readonly IRepository<User> repository2;
         private readonly IMapper mapper;
-        public OwnerService(IRepository<Owner> repository, IMapper mapper)
+        public OwnerService(IRepository<Owner> repository, IRepository<User> repository2, IMapper mapper)
         {
             this.repository = repository;
+            this.repository2 = repository2;
             this.mapper = mapper;
         }
         public OwnerDto AddItem(OwnerDto item)
         {
-            return mapper.Map<Owner, OwnerDto>(repository.AddItem(mapper.Map<OwnerDto, Owner>(item)));
+            var owner = mapper.Map<OwnerDto, Owner>(item);
+            var user = owner.User;
+            user.Role = "Onwer";
+            repository2.UpdateItem(user.Id,user);
+            return mapper.Map<Owner, OwnerDto>(repository.AddItem(owner));
         }
 
         public void DeleteItem(int id)
         {
-            repository.DeleteItem(id);
+            var owner =repository.GetById(id);
+            owner.Percentage = -1;
+            owner.User.Role = "user";
+            repository2.UpdateItem(owner.User.Id, owner.User);
+            repository.UpdateItem(id,owner);
         }
 
         public List<OwnerDto> GetAll()

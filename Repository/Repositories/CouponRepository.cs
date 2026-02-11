@@ -43,6 +43,14 @@ namespace Repository.Repositories
         {
             var Coupon = GetById(id);
             Coupon.Name = item.Name;
+            Coupon.Status = item.Status;
+            Coupon.Value = item.Value;
+            Coupon.MinPrice = item.MinPrice;
+            Coupon.EndDate = item.EndDate;
+            Coupon.StartDate = item.StartDate;
+            Coupon.IsPercentages = item.IsPercentages;
+            Coupon.Course = item.Course;
+            Coupon.CourseId = item.CourseId;
             _context.save();
         }
     }

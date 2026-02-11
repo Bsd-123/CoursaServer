@@ -1,17 +1,15 @@
+//using DBFirst.Models;
 using DBFirst.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Entities;
 using Repository.Interfaces;
 using Repository.Repositories;
+using Service.Dto;
 using Service.Interfaces;
 using Service.Services;
-using Service.Dto;
 using System.Text;
-using WebApiServer.Controllers;
-using AutoMapper;
 
 
 
@@ -53,51 +51,51 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MyMapper>();
 });
-//builder.Services.AddScoped<IContext,Database>();
+builder.Services.AddScoped<IContext,CoursaDbContext>();
 //חיבור ל sql 
-builder.Services.AddScoped<IContext, CoursaDbContext>();
+//builder.Services.AddScoped<IContext, CoursaDbContext>();
 
 ////סווגר עם אבטחה
-//builder.Services.AddSwaggerGen(c =>
-//{
-//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "securityLessonWebApi", Version = "v1" });
-//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Description = "Please enter your bearer token",
-//        Name = "Authorization",
-//        In = ParameterLocation.Header,
-//        Type = SecuritySchemeType.ApiKey
-//    });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "securityLessonWebApi", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Please enter your bearer token",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
 
-//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-//            {
-//                {
-//                    new OpenApiSecurityScheme
-//                    {
-//                        Reference = new OpenApiReference
-//                        {
-//                            Type = ReferenceType.SecurityScheme,
-//                            Id = "Bearer"
-//                        }
-//                    },
-//                    new string[] {}
-//                }
-//            });
-//});
-//שימוש בטוקן כדי לאמת
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//      .AddJwtBearer(option =>
-//      option.TokenValidationParameters = new TokenValidationParameters
-//      {
-//          ValidateIssuer = true,
-//          ValidateAudience = true,
-//          ValidateLifetime = true,
-//          ValidateIssuerSigningKey = true,
-//          ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//          ValidAudience = builder.Configuration["Jwt:Audience"],
-//          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+});
+// שימושבטוקן כדי לאמת
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+      .AddJwtBearer(option =>
+      option.TokenValidationParameters = new TokenValidationParameters
+      {
+          ValidateIssuer = true,
+          ValidateAudience = true,
+          ValidateLifetime = true,
+          ValidateIssuerSigningKey = true,
+          ValidIssuer = builder.Configuration["Jwt:Issuer"],
+          ValidAudience = builder.Configuration["Jwt:Audience"],
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
 
-//      });
+      });
 
 var app = builder.Build();
 
@@ -109,9 +107,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
-//app.UseAuthorization();
-//app.UseAuthentication();
 app.MapControllers();
 
 app.Run();

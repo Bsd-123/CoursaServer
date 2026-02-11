@@ -42,7 +42,15 @@ namespace Repository.Repositories
         {
             var Lesson = GetById(id);
             Lesson.Name = item.Name;
-
+            Lesson.Content = item.Content;
+            Lesson.IsFree = item.IsFree;
+            Lesson.Status = item.Status;
+            Lesson.Type = item.Type;
+            Lesson.TypeId = item.TypeId;
+            Lesson.MimeType = item.MimeType;
+            Lesson.Idx = item.Idx;
+            Lesson.CourseId = item.CourseId;
+            Lesson.Course = item.Course;
             _context.save();
         }
     }

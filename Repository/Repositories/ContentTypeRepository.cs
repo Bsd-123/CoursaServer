@@ -42,7 +42,7 @@ namespace Repository.Repositories
         {
             var ContentType = GetById(id);
             ContentType.Name = item.Name;
-
+            ContentType.DisplayIcon = item.DisplayIcon;
             _context.save();
         }
     }

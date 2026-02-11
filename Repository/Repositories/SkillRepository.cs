@@ -43,7 +43,7 @@ namespace Repository.Repositories
         {
             var Skill = GetById(id);
             Skill.Name = item.Name;
-
+            Skill.Image= item.Image;
             _context.save();
         }
     }

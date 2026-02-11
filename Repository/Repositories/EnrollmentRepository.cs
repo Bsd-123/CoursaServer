@@ -43,7 +43,13 @@ namespace Repository.Repositories
         {
             var Enrollment = GetById(id);
             Enrollment.StartDate = item.StartDate;
-
+            Enrollment.EndDate = item.EndDate;
+            Enrollment.FullPrice = item.FullPrice;
+            Enrollment.Status = item.Status;
+            Enrollment.ReceptionNumber = item.ReceptionNumber;
+            Enrollment.PaymentNumber = item.PaymentNumber;
+            Enrollment.Coupon = item.Coupon;
+            Enrollment.CouponId = item.CouponId;
             _context.save();
         }
     }

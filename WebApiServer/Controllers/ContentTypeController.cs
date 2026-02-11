@@ -32,7 +32,8 @@ namespace WebApiServer.Controllers
 
         // POST api/<ContentTypeController>
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Onwer")]
         public ContentTypeDto Post([FromForm] ContentTypeDto value)
         {
             if(value.FileImage!= null)
@@ -50,8 +51,21 @@ namespace WebApiServer.Controllers
 
         // PUT api/<ContentTypeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] ContentTypeDto value)
+        [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Onwer")]
+        public void Put(int id, [FromForm] ContentTypeDto value)
         {
+            if (value.FileImage != null)
+            {
+                //to add in the con.
+                //var fileName = Guid.NewGuid().ToString() + Path.GetExtension(value.FileImage.FileName);
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
+            }
             service.UpdateItem(id,value);
         }
 

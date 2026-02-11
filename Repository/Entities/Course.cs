@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Entities;
 
@@ -15,9 +14,9 @@ public partial class Course
     public int Price { get; set; }
 
     public string? Image { get; set; }
-    [ForeignKey("Skill")]
+
     public int SkillId { get; set; }
-    [ForeignKey("Course")]
+
     public int OwnerId { get; set; }
 
     public bool? Status { get; set; }

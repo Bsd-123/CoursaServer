@@ -42,6 +42,7 @@ namespace Repository.Repositories
         {
             var Progress = GetById(id);
             Progress.Seconds = item.Seconds;
+            Progress.LastView = item.LastView;
 
             _context.save();
         }

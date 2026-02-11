@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Entities;
 
 public partial class Coupon
 {
     public int Id { get; set; }
-    [ForeignKey("Course")]
+
     public int CourseId { get; set; }
 
     public string Name { get; set; } = null!;
@@ -24,7 +23,11 @@ public partial class Coupon
 
     public bool? Status { get; set; }
 
+    public int? UserId { get; set; }
+
     public virtual Course Course { get; set; } = null!;
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+
+    public virtual User? User { get; set; }
 }

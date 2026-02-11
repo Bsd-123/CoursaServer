@@ -11,5 +11,9 @@ public partial class Skill
 
     public string? Image { get; set; }
 
+    public int? UserId { get; set; }
+
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
+
+    public virtual User? User { get; set; }
 }

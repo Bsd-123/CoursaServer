@@ -32,7 +32,7 @@ namespace Service.Services
 
         public List<UserDto> GetAll()
         {
-            return mapper.Map<List<User>, List<UserDto>>(repository.GetAll());
+            return mapper.Map<List<User>, List<UserDto>>(repository.GetAll()).Where(x=> x.Role != "Delete").ToList();
         }
 
         public UserDto GetById(int id)

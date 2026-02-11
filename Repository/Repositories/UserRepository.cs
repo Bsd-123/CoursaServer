@@ -43,7 +43,10 @@ namespace Repository.Repositories
         {
             var User = GetById(id);
             User.Name = item.Name;
-
+            User.Email = item.Email;
+            User.Password = item.Password;
+            User.Role = item.Role;
+            User.RegDate = item.RegDate;
             _context.save();
         }
     }

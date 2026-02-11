@@ -18,6 +18,14 @@ namespace Service.Services
             CreateMap<ContentTypeDto, ContentType>().ForMember("DisplayIcon", x => x.MapFrom(y => y.FileImage.FileName));
             CreateMap<Owner, OwnerDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
             CreateMap<OwnerDto, Owner>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<Skill, SkillDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
+            CreateMap<SkillDto, Skill>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<Course, CourseDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
+            CreateMap<CourseDto, Course>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>();
+            CreateMap<User, UserLogin>();
+            CreateMap<UserLogin, User>();
         }
         public byte[] fromStringToByte(string mypath)
         {
