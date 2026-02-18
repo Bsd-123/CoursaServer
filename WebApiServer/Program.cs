@@ -41,7 +41,10 @@ builder.Services.AddScoped<IService<CourseDto>, CourseService>();
 builder.Services.AddScoped<IService<OwnerDto>, OwnerService>();
 builder.Services.AddScoped<IService<SkillDto>, SkillService>();
 builder.Services.AddScoped<IService<UserDto>, UserService>();
-
+builder.Services.AddScoped<IServiceDouble<EnrollmentDto>, EnrollmentService>();
+builder.Services.AddScoped<IServiceDouble<ProgressDto>, ProgressService>();
+builder.Services.AddScoped<IService<LessonDto>, LessonService>();
+builder.Services.AddScoped<IService<CouponDto>, CouponService>();
 builder.Services.AddScoped<ILogin, UserLoginService>();
 
 
@@ -57,6 +60,7 @@ builder.Services.AddScoped<IContext,CoursaDbContext>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "securityLessonWebApi", Version = "v1" });
+    c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Please enter your bearer token",
@@ -103,7 +107,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

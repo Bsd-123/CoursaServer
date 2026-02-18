@@ -31,7 +31,7 @@ namespace WebApiServer.Controllers
 
         // POST api/<OwnerController>
         [HttpPost]
-        public OwnerDto Post([FromForm] OwnerDto value)
+        public async Task<IActionResult> Post([FromForm] OwnerDto value)
         {
             if (value.FileImage != null)
             {
@@ -42,23 +42,29 @@ namespace WebApiServer.Controllers
                     fs.Close();
                 }
             }
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<OwnerController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromForm] OwnerDto value)
+        async public Task<IActionResult> Put(int id, [FromForm] OwnerDto value)
         {
             if (value.FileImage != null)
             {
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var fs = new FileStream(fullPath, FileMode.Create))
                 {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
+                    await value.FileImage.CopyToAsync(fs); // שימוש ב-Async
                 }
+                var urlForClient = "/Images/" + fileName;
             }
-            service.UpdateItem(id, value);
+            return await service.UpdateItem(id, value);
         }
 
         // DELETE api/<OwnerController>/5

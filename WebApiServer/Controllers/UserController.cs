@@ -32,9 +32,9 @@ namespace WebApiServer.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] UserDto value)
+        public async Task<IActionResult> Put(int id, [FromBody] UserDto value)
         {
-            service.UpdateItem(id,value);
+            return await service.UpdateItem(id,value);
         }
 
         // DELETE api/<UserController>/5

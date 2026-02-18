@@ -21,7 +21,8 @@ namespace Service.Dto
         public byte[]? Image { get; set; }
         public int SkillId { get; set; }
         public int OwnerId { get; set; }
-
+        public OwnerDto? Owner { get; set; }
+        public SkillDto? Skill { get; set; }
         public bool? Status { get; set; }
 
         public IFormFile? FileImage { get; set; }

@@ -39,12 +39,13 @@ namespace Repository.Repositories
             return _context.Skills.FirstOrDefault(x => x.Id == id);
         }
 
-        public void UpdateItem(int id, Skill item)
+        public Skill UpdateItem(int id, Skill item)
         {
             var Skill = GetById(id);
             Skill.Name = item.Name;
             Skill.Image= item.Image;
             _context.save();
+            return GetById(id);
         }
     }
 }

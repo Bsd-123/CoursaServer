@@ -14,10 +14,10 @@ namespace Service.Services
         string path = Directory.GetCurrentDirectory() + "\\images\\";
         public MyMapper()
         {
-            CreateMap<ContentType, ContentTypeDto>().ForMember("DisplayIcon", x => x.MapFrom(y => fromStringToByte(y.DisplayIcon)));
-            CreateMap<ContentTypeDto, ContentType>().ForMember("DisplayIcon", x => x.MapFrom(y => y.FileImage.FileName));
-            CreateMap<Owner, OwnerDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
-            CreateMap<OwnerDto, Owner>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<ContentType, ContentTypeDto>();
+            CreateMap<ContentTypeDto, ContentType>();
+            CreateMap<Owner, OwnerDto>();
+            CreateMap<OwnerDto, Owner>();
             CreateMap<Skill, SkillDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
             CreateMap<SkillDto, Skill>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
             CreateMap<Course, CourseDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));

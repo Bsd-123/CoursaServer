@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
@@ -20,9 +21,10 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public SkillDto AddItem(SkillDto item)
+        public Task<IActionResult> AddItem(SkillDto item)
         {
-            return mapper.Map<Skill, SkillDto>(repository.AddItem(mapper.Map<SkillDto, Skill>(item)));
+            var result = mapper.Map<Skill, SkillDto>(repository.AddItem(mapper.Map<SkillDto, Skill>(item)));
+            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
         }
 
         public void DeleteItem(int id)
@@ -40,9 +42,10 @@ namespace Service.Services
             return mapper.Map<Skill, SkillDto>(repository.GetById(id));
         }
 
-        public void UpdateItem(int id, SkillDto item)
+        public Task<IActionResult> UpdateItem(int id, SkillDto item)
         {
             repository.UpdateItem(id, mapper.Map<SkillDto, Skill>(item));
+            return Task.FromResult<IActionResult>(new NoContentResult());
         }
     }
 }

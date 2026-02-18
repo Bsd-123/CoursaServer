@@ -13,7 +13,7 @@ namespace Service.Dto
 
         public string Name { get; set; } = null!;
 
-        public byte[]? DisplayIcon { get; set; }
+        public string? DisplayIcon { get; set; }
 
         public IFormFile? FileImage { get; set; }
     }

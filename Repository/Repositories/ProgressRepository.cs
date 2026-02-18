@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,20 @@ namespace Repository.Repositories
 
         public List<Progress> GetAll()
         {
-            return _context.Progresses.ToList();
+            return _context.Progresses.Include(l => l.Lesson).Include(l => l.User).ToList();
         }
         public Progress GetById(int id1, int id2)
         {
-            return _context.Progresses.FirstOrDefault(x => x.UserId == id1 && x.LessonId == id2);
+            return _context.Progresses.Include(l => l.Lesson).Include(l => l.User).FirstOrDefault(x => x.UserId == id1 && x.LessonId == id2);
         }
 
-        public void UpdateItem(int id1, int id2, Progress item)
+        public Progress UpdateItem(int id1, int id2, Progress item)
         {
             var Progress = GetById(id1, id2);
             Progress.Seconds = item.Seconds;
             Progress.LastView = item.LastView;
             _context.save();
+            return GetById(id1,id2);
         }
     }
 }

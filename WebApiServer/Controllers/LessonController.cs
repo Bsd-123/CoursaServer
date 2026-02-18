@@ -12,37 +12,37 @@ namespace WebApiServer.Controllers
     [ApiController]
     public class LessonController : ControllerBase
     {
-        private readonly IRepository<Lesson> service;
-        public LessonController(IRepository<Lesson> service)
+        private readonly IService<LessonDto> service;
+        public LessonController(IService<LessonDto> service)
         {
             this.service = service;
         }
         // GET: api/<LessonController>
         [HttpGet]
-        public List<Lesson> Get()
+        public List<LessonDto> Get()
         {
             return service.GetAll();
         }
 
         // GET api/<LessonController>/5
         [HttpGet("{id}")]
-        public Lesson Get(int id)
+        public LessonDto Get(int id)
         {
             return service.GetById(id);
         }
 
         // POST api/<LessonController>
         [HttpPost]
-        public Lesson Post([FromForm] Lesson value)
+        public async Task<IActionResult> Post([FromForm] LessonDto   value)
         {
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<LessonController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromForm] Lesson value)
+        public async Task<IActionResult> Put(int id, [FromForm] LessonDto value)
         {
-            service.UpdateItem(id, value);
+            return await service.UpdateItem(id, value);
         }
 
         // DELETE api/<LessonController>/5

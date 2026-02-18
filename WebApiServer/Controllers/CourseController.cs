@@ -31,7 +31,7 @@ namespace WebApiServer.Controllers
 
         // POST api/<CourseController>
         [HttpPost]
-        public CourseDto Post([FromForm] CourseDto value)
+        public async Task<IActionResult> Post([FromForm] CourseDto value)
         {
             if (value.FileImage != null)
             {
@@ -42,12 +42,12 @@ namespace WebApiServer.Controllers
                     fs.Close();
                 }
             }
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<CourseController>/5
         [HttpPut("{id}")]
-        async public void Put(int id, [FromForm] CourseDto value)
+        async public Task<IActionResult> Put(int id, [FromForm] CourseDto value)
         {
             if (value.FileImage != null)
             {
@@ -64,7 +64,7 @@ namespace WebApiServer.Controllers
                 }
                 var urlForClient = "/Images/" + fileName;
             }
-            service.UpdateItem(id, value);
+            return await service.UpdateItem(id, value);
         }
 
         // DELETE api/<CourseController>/5

@@ -12,37 +12,37 @@ namespace WebApiServer.Controllers
     [ApiController]
     public class ProgressController : ControllerBase
     {
-        private readonly IRepositoryDouble<Progress> service;
-        public ProgressController(IRepositoryDouble<Progress> service)
+        private readonly IServiceDouble<ProgressDto> service;
+        public ProgressController(IServiceDouble<ProgressDto> service)
         {
             this.service = service;
         }
         // GET: api/<SkillController>
         [HttpGet]
-        public List<Progress> Get()
+        public List<ProgressDto> Get()
         {
             return service.GetAll();
         }
 
         // GET api/<SkillController>/5
         [HttpGet("{id}")]
-        public Progress Get(int id1, int id2)
+        public ProgressDto Get(int id1, int id2)
         {
             return service.GetById(id1, id2);
         }
 
         // POST api/<SkillController>
         [HttpPost]
-        public Progress Post([FromForm] Progress value)
+        public async Task<IActionResult> Post([FromBody] ProgressDto value)
         {
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<SkillController>/5
         [HttpPut("{id}")]
-        public void Put(int id1, int id2, [FromForm] Progress value)
+        public async Task<IActionResult> Put(int id1, int id2, [FromForm] ProgressDto value)
         {
-            service.UpdateItem(id1, id2, value);
+            return await service.UpdateItem(id1, id2, value);
         }
 
         // DELETE api/<SkillController>/5

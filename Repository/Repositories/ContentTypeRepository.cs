@@ -38,12 +38,13 @@ namespace Repository.Repositories
             return _context.ContentTypes.FirstOrDefault(x => x.Id == id);
         }
 
-        public void UpdateItem(int id, ContentType item)
+        public ContentType UpdateItem(int id, ContentType item)
         {
             var ContentType = GetById(id);
             ContentType.Name = item.Name;
             ContentType.DisplayIcon = item.DisplayIcon;
             _context.save();
+            return GetById(id);
         }
     }
 }

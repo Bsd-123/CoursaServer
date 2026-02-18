@@ -31,7 +31,7 @@ namespace WebApiServer.Controllers
 
         // POST api/<SkillController>
         [HttpPost]
-        public SkillDto Post([FromForm] SkillDto value)
+        public async Task<IActionResult> Post([FromForm] SkillDto value)
         {
             if (value.FileImage != null)
             {
@@ -42,12 +42,12 @@ namespace WebApiServer.Controllers
                     fs.Close();
                 }
             }
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<SkillController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromForm] SkillDto value)
+        public async Task<IActionResult> Put(int id, [FromForm] SkillDto value)
         {
             if (value.FileImage != null)
             {
@@ -58,7 +58,7 @@ namespace WebApiServer.Controllers
                     fs.Close();
                 }
             }
-            service.UpdateItem(id, value);
+            return await service.UpdateItem(id, value);
         }
 
         // DELETE api/<SkillController>/5

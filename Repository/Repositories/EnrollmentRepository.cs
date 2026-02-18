@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,15 +32,15 @@ namespace Repository.Repositories
 
         public List<Enrollment> GetAll()
         {
-            return _context.Enrollments.ToList();
+            return _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).ToList();
         }
 
         public Enrollment GetById(int id1, int id2)
         {
-            return _context.Enrollments.FirstOrDefault(x => x.UserId == id1 && x.CourseId ==id2);
+            return _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).FirstOrDefault(x => x.UserId == id1 && x.CourseId ==id2);
         }
 
-        public void UpdateItem(int id1, int id2, Enrollment item)
+        public Enrollment UpdateItem(int id1, int id2, Enrollment item)
         {
             var Enrollment = GetById(id1,id2);
             Enrollment.StartDate = item.StartDate;
@@ -48,9 +49,9 @@ namespace Repository.Repositories
             Enrollment.Status = item.Status;
             Enrollment.ReceptionNumber = item.ReceptionNumber;
             Enrollment.PaymentNumber = item.PaymentNumber;
-            Enrollment.Coupon = item.Coupon;
             Enrollment.CouponId = item.CouponId;
             _context.save();
+            return GetById(id1, id2);
         }
     }
 }

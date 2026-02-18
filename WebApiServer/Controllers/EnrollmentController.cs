@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
+using Service.Dto;
 using Service.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,37 +12,37 @@ namespace WebApiServer.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private readonly IRepositoryDouble<Enrollment> service;
-        public EnrollmentController(IRepositoryDouble<Enrollment> service)
+        private readonly IServiceDouble<EnrollmentDto> service;
+        public EnrollmentController(IServiceDouble<EnrollmentDto> service)
         {
             this.service = service;
         }
         // GET: api/<EnrollmentController>
         [HttpGet]
-        public List<Enrollment> Get()
+        public List<EnrollmentDto> Get()
         {
             return service.GetAll();
         }
 
         // GET api/<EnrollmentController>/5
         [HttpGet("{id}")]
-        public Enrollment Get(int id1, int id2)
+        public EnrollmentDto Get(int id1, int id2)
         {
             return service.GetById(id1, id2);
         }
 
         // POST api/<EnrollmentController>
         [HttpPost]
-        public Enrollment Post([FromForm] Enrollment value)
+        public async Task<IActionResult> Post([FromBody] EnrollmentDto  value)
         {
-            return service.AddItem(value);
+            return await service.AddItem(value);
         }
 
         // PUT api/<EnrollmentController>/5
         [HttpPut("{id}")]
-        public void Put(int id1, int id2, [FromForm] Enrollment value)
+        public async Task<IActionResult> Put(int id1, int id2, [FromForm] EnrollmentDto value)
         {
-            service.UpdateItem(id1, id2, value);
+            return await service.UpdateItem(id1, id2, value);
         }
 
         // DELETE api/<EnrollmentController>/5

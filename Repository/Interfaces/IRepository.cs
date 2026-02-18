@@ -14,13 +14,13 @@ namespace Repository.Interfaces
     public interface IRepository<T>:IRepositoryBase<T>
     {
         T GetById(int id);
-        void UpdateItem(int id, T item);
+        T UpdateItem(int id, T item);
         void DeleteItem(int id);
     }
     public interface IRepositoryDouble<T> : IRepositoryBase<T>
     {
         T GetById(int id1, int id2);
-        void UpdateItem(int id1, int id2, T item);
+        T UpdateItem(int id1, int id2, T item);
         void DeleteItem(int id1, int id2);
     }
 }

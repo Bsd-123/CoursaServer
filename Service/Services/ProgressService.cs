@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
@@ -20,9 +21,10 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public ProgressDto AddItem(ProgressDto item)
+        public Task<IActionResult> AddItem(ProgressDto item)
         {
-            return mapper.Map<Progress, ProgressDto>(repository.AddItem(mapper.Map<ProgressDto, Progress>(item)));
+            var result = mapper.Map<Progress, ProgressDto>(repository.AddItem(mapper.Map<ProgressDto, Progress>(item)));
+            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
         }
 
         public void DeleteItem(int id1, int id2)
@@ -40,9 +42,10 @@ namespace Service.Services
             return mapper.Map<Progress, ProgressDto>(repository.GetById(id1, id2));
         }
 
-        public void UpdateItem(int id1, int id2, ProgressDto item)
+        public Task<IActionResult> UpdateItem(int id1, int id2, ProgressDto item)
         {
             repository.UpdateItem(id1, id2, mapper.Map<ProgressDto, Progress>(item));
+            return Task.FromResult<IActionResult>(new NoContentResult());
         }
     }
 }

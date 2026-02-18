@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ namespace Repository.Repositories
         public Coupon AddItem(Coupon item)
         {
             _context.Coupons.Add(item);
-
             _context.save();
             return item;
         }
@@ -31,27 +31,28 @@ namespace Repository.Repositories
 
         public List<Coupon> GetAll()
         {
-            return _context.Coupons.ToList();
+            return _context.Coupons.Include(c => c.User).Include(c => c.Course).ToList();
         }
 
         public Coupon GetById(int id)
         {
-            return _context.Coupons.FirstOrDefault(x => x.Id == id);
+            return _context.Coupons.Include(c => c.User).Include(c => c.Course).FirstOrDefault(x => x.Id == id);
         }
 
-        public void UpdateItem(int id, Coupon item)
+        public Coupon UpdateItem(int id, Coupon item)
         {
             var Coupon = GetById(id);
             Coupon.Name = item.Name;
             Coupon.Status = item.Status;
             Coupon.Value = item.Value;
+            Coupon.UserId = item.UserId;
             Coupon.MinPrice = item.MinPrice;
             Coupon.EndDate = item.EndDate;
             Coupon.StartDate = item.StartDate;
             Coupon.IsPercentages = item.IsPercentages;
-            Coupon.Course = item.Course;
             Coupon.CourseId = item.CourseId;
             _context.save();
+            return GetById(id);
         }
     }
 }

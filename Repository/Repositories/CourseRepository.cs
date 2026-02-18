@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,27 +32,26 @@ namespace Repository.Repositories
 
         public List<Course> GetAll()
         {
-            return _context.Courses.ToList();
+            return _context.Courses.Include(c => c.Skill).Include(c => c.Owner).ToList();
         }
 
         public Course GetById(int id)
         {
-            return _context.Courses.FirstOrDefault(x => x.Id == id);
+            return _context.Courses.Include(c => c.Skill).Include(c => c.Owner).FirstOrDefault(x => x.Id == id);
         }
 
-        public void UpdateItem(int id, Course item)
+        public Course UpdateItem(int id, Course item)
         {
             var Course = GetById(id);
             Course.Name = item.Name;
             Course.Status = item.Status;
-            Course.Owner  = item.Owner; 
             Course.Description = item.Description;
             Course.Price = item.Price;
             Course.Image = item.Image;
             Course.OwnerId = item.OwnerId;
-            Course.Skill = item.Skill;
             Course.SkillId = item.SkillId;
             _context.save();
+            return GetById(id);
         }
     }
 }

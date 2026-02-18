@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,18 +10,18 @@ namespace Service.Interfaces
     public interface IServiceBase<T>
     {
         List<T> GetAll();
-        T AddItem(T item);
+        Task<IActionResult> AddItem(T item);
     }
     public interface IService<T> : IServiceBase<T>
     {
         T GetById(int id);
-        void UpdateItem(int id, T item);
+        Task<IActionResult> UpdateItem(int id, T item);
         void DeleteItem(int id);
     }
     public interface IServiceDouble<T> : IServiceBase<T>
     {
         T GetById(int id1, int id2);
-        void UpdateItem(int id1, int id2, T item);
+        Task<IActionResult> UpdateItem(int id1, int id2, T item);
         void DeleteItem(int id1, int id2);
     }
 }

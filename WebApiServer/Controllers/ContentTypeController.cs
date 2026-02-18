@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interfaces;
+using System.Net.Mime;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,10 +34,10 @@ namespace WebApiServer.Controllers
         // POST api/<ContentTypeController>
         [HttpPost]
         [Consumes("multipart/form-data")]
-        [Authorize(Roles = "Onwer")]
-        public ContentTypeDto Post([FromForm] ContentTypeDto value)
+        [Authorize(Roles = "owner")]
+        public async Task<IActionResult> Post([FromForm] ContentTypeDto value)
         {
-            if(value.FileImage!= null)
+            if (value.FileImage != null)
             {
                 var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
                 using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -45,28 +46,33 @@ namespace WebApiServer.Controllers
                     fs.Close();
                 }
             }
-            
-            return service.AddItem(value);
+
+            return await service.AddItem(value);
         }
 
         // PUT api/<ContentTypeController>/5
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
-        [Authorize(Roles = "Onwer")]
-        public void Put(int id, [FromForm] ContentTypeDto value)
+        [Authorize(Roles = "owner")]
+        public async Task<IActionResult> Put(int id, [FromForm] ContentTypeDto value)
         {
             if (value.FileImage != null)
             {
-                //to add in the con.
-                //var fileName = Guid.NewGuid().ToString() + Path.GetExtension(value.FileImage.FileName);
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var fs = new FileStream(fullPath, FileMode.Create))
                 {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
+                    await value.FileImage.CopyToAsync(fs); 
                 }
+                var urlForClient = "/Images/" + fileName;
+                value.DisplayIcon = urlForClient;
             }
-            service.UpdateItem(id,value);
+            return await service.UpdateItem(id, value);
         }
 
         // DELETE api/<ContentTypeController>/5

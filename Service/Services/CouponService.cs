@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
@@ -20,9 +21,10 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public CouponDto AddItem(CouponDto item)
+        public Task<IActionResult> AddItem(CouponDto item)
         {
-            return mapper.Map<Coupon, CouponDto>(repository.AddItem(mapper.Map<CouponDto, Coupon>(item)));
+            var result = mapper.Map<Coupon, CouponDto>(repository.AddItem(mapper.Map<CouponDto, Coupon>(item)));
+            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
         }
 
         public void DeleteItem(int id)
@@ -40,9 +42,10 @@ namespace Service.Services
             return mapper.Map<Coupon, CouponDto>(repository.GetById(id));
         }
 
-        public void UpdateItem(int id, CouponDto item)
+        public Task<IActionResult> UpdateItem(int id, CouponDto item)
         {
-            repository.UpdateItem(id, mapper.Map<CouponDto, Coupon>(item));
+            repository.UpdateItem(id,mapper.Map<CouponDto, Coupon>(item));
+            return Task.FromResult<IActionResult>(new NoContentResult());
         }
     }
 }
