@@ -12,6 +12,10 @@ namespace WebApiServer.Controllers
     {
         private readonly IService<UserDto> service;
         // GET: api/<UserController>
+        public UserController(IService<UserDto> service)
+        {
+            this.service = service;
+        }
         [HttpGet]
         public List<UserDto> Get()
         {

@@ -31,26 +31,38 @@ namespace WebApiServer.Controllers
 
         // POST api/<CourseController>
         [HttpPost]
-        public void Post([FromForm] CourseDto value)
+        public CourseDto Post([FromForm] CourseDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
-            service.AddItem(value);
+            return service.AddItem(value);
         }
 
         // PUT api/<CourseController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromForm] CourseDto value)
+        async public void Put(int id, [FromForm] CourseDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var fs = new FileStream(fullPath, FileMode.Create))
+                {
+                    await value.FileImage.CopyToAsync(fs); // שימוש ב-Async
+                }
+                var urlForClient = "/Images/" + fileName;
             }
             service.UpdateItem(id, value);
         }

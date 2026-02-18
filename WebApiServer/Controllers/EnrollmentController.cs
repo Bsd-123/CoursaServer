@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Service.Dto;
-using Service.Interfaces;
 using Repository.Entities;
 using Repository.Interfaces;
+using Service.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,42 +9,42 @@ namespace WebApiServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProgressController : ControllerBase
+    public class EnrollmentController : ControllerBase
     {
-        private readonly IRepositoryDouble<Progress> service;
-        public ProgressController(IRepositoryDouble<Progress> service)
+        private readonly IRepositoryDouble<Enrollment> service;
+        public EnrollmentController(IRepositoryDouble<Enrollment> service)
         {
             this.service = service;
         }
-        // GET: api/<SkillController>
+        // GET: api/<EnrollmentController>
         [HttpGet]
-        public List<Progress> Get()
+        public List<Enrollment> Get()
         {
             return service.GetAll();
         }
 
-        // GET api/<SkillController>/5
+        // GET api/<EnrollmentController>/5
         [HttpGet("{id}")]
-        public Progress Get(int id1, int id2)
+        public Enrollment Get(int id1, int id2)
         {
             return service.GetById(id1, id2);
         }
 
-        // POST api/<SkillController>
+        // POST api/<EnrollmentController>
         [HttpPost]
-        public Progress Post([FromForm] Progress value)
+        public Enrollment Post([FromForm] Enrollment value)
         {
             return service.AddItem(value);
         }
 
-        // PUT api/<SkillController>/5
+        // PUT api/<EnrollmentController>/5
         [HttpPut("{id}")]
-        public void Put(int id1, int id2, [FromForm] Progress value)
+        public void Put(int id1, int id2, [FromForm] Enrollment value)
         {
             service.UpdateItem(id1, id2, value);
         }
 
-        // DELETE api/<SkillController>/5
+        // DELETE api/<EnrollmentController>/5
         [HttpDelete("{id}")]
         public void Delete(int id1, int id2)
         {

@@ -31,26 +31,32 @@ namespace WebApiServer.Controllers
 
         // POST api/<SkillController>
         [HttpPost]
-        public void Post([FromForm] SkillDto value)
+        public SkillDto Post([FromForm] SkillDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
-            service.AddItem(value);
+            return service.AddItem(value);
         }
 
         // PUT api/<SkillController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromForm] SkillDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
             service.UpdateItem(id, value);
         }

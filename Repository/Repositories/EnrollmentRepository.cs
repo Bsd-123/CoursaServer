@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class EnrollmentRepository:IRepository<Enrollment>
+    public class EnrollmentRepository:IRepositoryDouble<Enrollment>
     {
         private readonly IContext _context;
         public EnrollmentRepository(IContext context)
@@ -23,9 +23,9 @@ namespace Repository.Repositories
             return item;
         }
 
-        public void DeleteItem(int id)
+        public void DeleteItem(int id1, int id2)
         {
-            _context.Enrollments.Remove(GetById(id));
+            _context.Enrollments.Remove(GetById(id1,id2));
             _context.save();
         }
 
@@ -33,15 +33,15 @@ namespace Repository.Repositories
         {
             return _context.Enrollments.ToList();
         }
-        // to ask the teacher
-        public Enrollment GetById(int id)
+
+        public Enrollment GetById(int id1, int id2)
         {
-            return _context.Enrollments.FirstOrDefault(x => x.CourseId == id);
+            return _context.Enrollments.FirstOrDefault(x => x.UserId == id1 && x.CourseId ==id2);
         }
 
-        public void UpdateItem(int id, Enrollment item)
+        public void UpdateItem(int id1, int id2, Enrollment item)
         {
-            var Enrollment = GetById(id);
+            var Enrollment = GetById(id1,id2);
             Enrollment.StartDate = item.StartDate;
             Enrollment.EndDate = item.EndDate;
             Enrollment.FullPrice = item.FullPrice;

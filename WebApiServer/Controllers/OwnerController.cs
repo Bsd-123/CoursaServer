@@ -31,26 +31,32 @@ namespace WebApiServer.Controllers
 
         // POST api/<OwnerController>
         [HttpPost]
-        public void Post([FromForm] OwnerDto value)
+        public OwnerDto Post([FromForm] OwnerDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
-            service.AddItem(value);
+            return service.AddItem(value);
         }
 
         // PUT api/<OwnerController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromForm] OwnerDto value)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            if (value.FileImage != null)
             {
-                value.FileImage.CopyTo(fs);
-                fs.Close();
+                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    value.FileImage.CopyTo(fs);
+                    fs.Close();
+                }
             }
             service.UpdateItem(id, value);
         }

@@ -22,6 +22,15 @@ namespace Service.Services
             CreateMap<SkillDto, Skill>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
             CreateMap<Course, CourseDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
             CreateMap<CourseDto, Course>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<CouponDto, Coupon>();
+            CreateMap<Coupon, CouponDto>();
+            CreateMap<Enrollment, EnrollmentDto>();
+            CreateMap<EnrollmentDto, Enrollment>();
+            CreateMap<Progress, ProgressDto>();
+            CreateMap<ProgressDto, Progress>();
+            CreateMap<Lesson, LessonDto>().ForMember("Content", x => x.MapFrom(y => fromStringToByte(y.Content)));
+            CreateMap<LessonDto, Lesson>().ForMember("Content", x => x.MapFrom(y => y));
+            
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<User, UserLogin>();
