@@ -3,6 +3,7 @@ using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
 using Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,22 +15,32 @@ namespace Service.Services
     public class UserLoginService :ILogin
     {
         private readonly IRepository<User> _repository;
-        public UserLoginService(IRepository<User> _repository)
+        private readonly IMapper mapper;
+        public UserLoginService(IRepository<User> _repository, IMapper mapper)
         {
             this._repository = _repository;
+            this.mapper = mapper;
         }
-        public User Authenticate(UserLogin user)
+        public async Task<UserDto> Authenticate(UserLogin user)
         {
-            return _repository.GetAll().FirstOrDefault(x => x.Email == user.Email && x.Password == user.Password);
+            return mapper.Map <User,UserDto > ((await _repository.GetAll()).FirstOrDefault(x => x.Email == user.Email && x.Password == user.Password));
+        }
+        public async Task<UserDto> GetByEmail(string email)
+        {
+            return mapper.Map<User, UserDto>((await _repository.GetAll()).FirstOrDefault(x => x.Email == email));
+        }
+        public async Task<UserDto> AddUser(User item)
+        {
+            return mapper.Map<User, UserDto>(await _repository.AddItem(item));
+        }
+        //public async Task<UserDto> Authenticate(UserLogin user)
+        //{
+        //    // קריאה לפונקציה ב-Repository שבודקת רק משתמש אחד ב-DB
+        //    var authUser = await repository.GetByEmailAndPassword(user.Email, user.Password);
 
-        }
-        public User GetByEmail(string email)
-        {
-            return _repository.GetAll().FirstOrDefault(x => x.Email == email);
-        }
-        public User AddUser(User item)
-        {
-            return _repository.AddItem(item);
-        }
+        //    if (authUser == null) return null; // טיפול במקרה של פרטים שגויים
+
+        //    return mapper.Map<User, UserDto>(authUser);
+        //}
     }
 }

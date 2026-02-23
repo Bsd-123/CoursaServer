@@ -34,9 +34,9 @@ public partial class CoursaDbContext : DbContext, IContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public void save()
+    public async Task SaveAsync()
     {
-        SaveChanges();
+        await SaveChangesAsync();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -16,35 +16,34 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Progress AddItem(Progress item)
+        public async Task<Progress> AddItem(Progress item)
         {
             _context.Progresses.Add(item);
-            _context.save();
+            await _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id1, int id2)
+        public async Task DeleteItem(int id1, int id2)
         {
-            _context.Progresses.Remove(GetById(id1,id2));
-            _context.save();
+            _context.Progresses.Remove(await GetById(id1, id2));
+            await _context.SaveAsync();
         }
 
-        public List<Progress> GetAll()
+        public async Task<List<Progress>> GetAll()
         {
             return _context.Progresses.Include(l => l.Lesson).Include(l => l.User).ToList();
         }
-        public Progress GetById(int id1, int id2)
+        public async Task<Progress> GetById(int id1, int id2)
         {
-            return _context.Progresses.Include(l => l.Lesson).Include(l => l.User).FirstOrDefault(x => x.UserId == id1 && x.LessonId == id2);
+            return await _context.Progresses.Include(l => l.Lesson).Include(l => l.User).FirstOrDefaultAsync(x => x.UserId == id1 && x.LessonId == id2);
         }
 
-        public Progress UpdateItem(int id1, int id2, Progress item)
+        public async Task UpdateItem(int id1, int id2, Progress item)
         {
-            var Progress = GetById(id1, id2);
+            var Progress =await GetById(id1, id2);
             Progress.Seconds = item.Seconds;
             Progress.LastView = item.LastView;
-            _context.save();
-            return GetById(id1,id2);
+            await _context.SaveAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
@@ -19,37 +20,42 @@ namespace WebApiServer.Controllers
         }
         // GET: api/<CouponController>
         [HttpGet]
-        public List<CouponDto> Get()
+		[Authorize]
+		public async Task<List<CouponDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<CouponController>/5
         [HttpGet("{id}")]
-        public CouponDto Get(int id)
+		[Authorize]
+		public async Task<CouponDto> Get(int id)
         {
-            return service.GetById(id);
+            return await service.GetById(id);
         }
 
         // POST api/<CouponController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CouponDto value)
+		[Authorize(Roles = "owner,admin")]
+		public async Task<CouponDto> Post([FromBody] CouponDto value)
         {
-            return await service.AddItem(value);
+            return await  service.AddItem(value);
         }
 
         // PUT api/<CouponController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] CouponDto value)
+		[Authorize(Roles = "owner,admin")]
+		public async Task Put(int id, [FromBody] CouponDto value)
         {
-            return await service.UpdateItem(id, value);
+             await service.UpdateItem(id, value);
         }
 
         // DELETE api/<CouponController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+		[Authorize(Roles = "admin")]
+		public async Task Delete(int id)
         {
-            service.DeleteItem(id);
+            await service.DeleteItem(id);
         }
     }
 }

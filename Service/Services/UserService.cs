@@ -22,30 +22,30 @@ namespace Service.Services
             this.mapper = mapper;
         }
 
-        public Task<IActionResult> AddItem(UserDto item)
+        public async Task<UserDto> AddItem(UserDto item)
         {
-            var result =  mapper.Map<User, UserDto>(repository.AddItem(mapper.Map <UserDto, User> (item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            var result =  mapper.Map<User, UserDto>(await repository.AddItem(mapper.Map <UserDto, User> (item)));
+            return result;
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            repository.DeleteItem(id);
-        }
-
-        public List<UserDto> GetAll()
-        {
-            return mapper.Map<List<User>, List<UserDto>>(repository.GetAll()).Where(x=> x.Role != "Delete").ToList();
+            await repository.DeleteItem(id);
         }
 
-        public UserDto GetById(int id)
+        public async Task<List<UserDto>> GetAll()
         {
-            return mapper.Map<User, UserDto>(repository.GetById(id));
+            return  mapper.Map<List<User>, List<UserDto>>(await repository.GetAll()).Where(x=> x.Role != "Delete").ToList();
         }
 
-        public Task<IActionResult> UpdateItem(int id, UserDto item)
+        public async Task<UserDto> GetById(int id)
         {
-            repository.UpdateItem(id, mapper.Map<UserDto, User>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            return mapper.Map<User, UserDto>(await repository.GetById(id));
         }
+
+        public async Task UpdateItem(int id, UserDto item)
+        {
+            await repository.UpdateItem(id, mapper.Map<UserDto, User>(item));
+        }
+        
     }
 }

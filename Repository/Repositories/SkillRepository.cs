@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,37 +16,35 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Skill AddItem(Skill item)
+        public async Task<Skill> AddItem(Skill item)
         {
             _context.Skills.Add(item);
-
-            _context.save();
+            await _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.Skills.Remove(GetById(id));
-            _context.save();
+            _context.Skills.Remove(await GetById(id));
+            await _context.SaveAsync();
         }
 
-        public List<Skill> GetAll()
+        public async Task<List<Skill>> GetAll()
         {
-            return _context.Skills.ToList();
+            return await _context.Skills.ToListAsync();
         }
 
-        public Skill GetById(int id)
+        public async Task<Skill> GetById(int id)
         {
-            return _context.Skills.FirstOrDefault(x => x.Id == id);
+            return await _context.Skills.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Skill UpdateItem(int id, Skill item)
+        public async Task UpdateItem(int id, Skill item)
         {
-            var Skill = GetById(id);
+            var Skill = await GetById(id);
             Skill.Name = item.Name;
             Skill.Image= item.Image;
-            _context.save();
-            return GetById(id);
+            await  _context.SaveAsync();
         }
     }
 }

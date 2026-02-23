@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,40 +16,38 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public User AddItem(User item)
+        public async Task<User> AddItem(User item)
         {
             _context.Users.Add(item);
-
-            _context.save();
+            await _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.Users.Remove(GetById(id));
-            _context.save();
+            _context.Users.Remove(await GetById(id));
+            await _context.SaveAsync();
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return _context.Users.ToList();
+            return await _context.Users.ToListAsync();
         }
 
-        public User GetById(int id)
+        public async Task<User> GetById(int id)
         {
-            return _context.Users.FirstOrDefault(x => x.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public User UpdateItem(int id, User item)
+        public async Task UpdateItem(int id, User item)
         {
-            var User = GetById(id);
+            var User = await GetById(id);
             User.Name = item.Name;
             User.Email = item.Email;
             //User.Password = item.Password;
             User.Role = item.Role;
             User.RegDate = item.RegDate;
-            _context.save();
-            return GetById(id);
+            await  _context.SaveAsync();
         }
     }
 }

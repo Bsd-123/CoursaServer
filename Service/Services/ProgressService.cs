@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(ProgressDto item)
+        public async Task<ProgressDto> AddItem(ProgressDto item)
         {
-            var result = mapper.Map<Progress, ProgressDto>(repository.AddItem(mapper.Map<ProgressDto, Progress>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<Progress, ProgressDto>(await repository.AddItem(mapper.Map<ProgressDto, Progress>(item)));
         }
 
-        public void DeleteItem(int id1, int id2)
+        public async Task DeleteItem(int id1, int id2)
         {
-            repository.DeleteItem(id1, id2);
+            await repository.DeleteItem(id1, id2);
         }
 
-        public List<ProgressDto> GetAll()
+        public async Task<List<ProgressDto>> GetAll()
         {
-            return mapper.Map<List<Progress>, List<ProgressDto>>(repository.GetAll());
+            return mapper.Map<List<Progress>, List<ProgressDto>>(await repository.GetAll());
         }
 
-        public ProgressDto GetById(int id1, int id2)
+        public async Task<ProgressDto> GetById(int id1, int id2)
         {
-            return mapper.Map<Progress, ProgressDto>(repository.GetById(id1, id2));
+            return mapper.Map<Progress, ProgressDto>(await repository.GetById(id1, id2));
         }
 
-        public Task<IActionResult> UpdateItem(int id1, int id2, ProgressDto item)
+        public async Task UpdateItem(int id1, int id2, ProgressDto item)
         {
-            repository.UpdateItem(id1, id2, mapper.Map<ProgressDto, Progress>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id1, id2, mapper.Map<ProgressDto, Progress>(item));
         }
     }
 }

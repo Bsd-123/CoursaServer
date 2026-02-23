@@ -18,7 +18,7 @@ namespace Service.Dto
 
         public int Price { get; set; }
 
-        public byte[]? Image { get; set; }
+        public string? Image { get; set; }
         public int SkillId { get; set; }
         public int OwnerId { get; set; }
         public OwnerDto? Owner { get; set; }

@@ -18,28 +18,28 @@ namespace Service.Services
             CreateMap<ContentTypeDto, ContentType>();
             CreateMap<Owner, OwnerDto>();
             CreateMap<OwnerDto, Owner>();
-            CreateMap<Skill, SkillDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
-            CreateMap<SkillDto, Skill>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
-            CreateMap<Course, CourseDto>().ForMember("Image", x => x.MapFrom(y => fromStringToByte(y.Image)));
-            CreateMap<CourseDto, Course>().ForMember("Image", x => x.MapFrom(y => y.FileImage.FileName));
+            CreateMap<Skill, SkillDto>();
+            CreateMap<SkillDto, Skill>();
+            CreateMap<Course, CourseDto>();
+            CreateMap<CourseDto, Course>();
             CreateMap<CouponDto, Coupon>();
             CreateMap<Coupon, CouponDto>();
             CreateMap<Enrollment, EnrollmentDto>();
             CreateMap<EnrollmentDto, Enrollment>();
             CreateMap<Progress, ProgressDto>();
             CreateMap<ProgressDto, Progress>();
-            CreateMap<Lesson, LessonDto>().ForMember("Content", x => x.MapFrom(y => fromStringToByte(y.Content)));
-            CreateMap<LessonDto, Lesson>().ForMember("Content", x => x.MapFrom(y => y));
+            CreateMap<Lesson, LessonDto>();
+            CreateMap<LessonDto, Lesson>();
             
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<User, UserLogin>();
             CreateMap<UserLogin, User>();
         }
-        public byte[] fromStringToByte(string mypath)
-        {
-            if (string.IsNullOrEmpty(mypath)) return null;
-            return File.ReadAllBytes(path + mypath);
-        }
+        //public byte[] fromStringToByte(string mypath)
+        //{
+        //    if (string.IsNullOrEmpty(mypath)) return null;
+        //    return File.ReadAllBytes(path + mypath);
+        //}
     }
 }

@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(CouponDto item)
+        public async Task<CouponDto> AddItem(CouponDto item)
         {
-            var result = mapper.Map<Coupon, CouponDto>(repository.AddItem(mapper.Map<CouponDto, Coupon>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<Coupon, CouponDto>(await repository.AddItem(mapper.Map<CouponDto, Coupon>(item)));
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            repository.DeleteItem(id);
+            await repository.DeleteItem(id);
         }
 
-        public List<CouponDto> GetAll()
+        public async Task<List<CouponDto>> GetAll()
         {
-            return mapper.Map<List<Coupon>, List<CouponDto>>(repository.GetAll());
+            return mapper.Map<List<Coupon>, List<CouponDto>>(await repository.GetAll());
         }
 
-        public CouponDto GetById(int id)
+        public async Task<CouponDto> GetById(int id)
         {
-            return mapper.Map<Coupon, CouponDto>(repository.GetById(id));
+            return mapper.Map<Coupon, CouponDto>(await repository.GetById(id));
         }
 
-        public Task<IActionResult> UpdateItem(int id, CouponDto item)
+        public async Task UpdateItem(int id, CouponDto item)
         {
-            repository.UpdateItem(id,mapper.Map<CouponDto, Coupon>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id,mapper.Map<CouponDto, Coupon>(item));
         }
     }
 }

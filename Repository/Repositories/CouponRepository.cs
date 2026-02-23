@@ -16,32 +16,32 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Coupon AddItem(Coupon item)
+        public async Task<Coupon> AddItem(Coupon item)
         {
             _context.Coupons.Add(item);
-            _context.save();
+            await _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.Coupons.Remove(GetById(id));
-            _context.save();
+            _context.Coupons.Remove(await  GetById(id));
+            await _context.SaveAsync();
         }
 
-        public List<Coupon> GetAll()
+        public async Task<List<Coupon>> GetAll()
         {
-            return _context.Coupons.Include(c => c.User).Include(c => c.Course).ToList();
+            return await  _context.Coupons.Include(c => c.User).Include(c => c.Course).ToListAsync();
         }
 
-        public Coupon GetById(int id)
+        public async Task<Coupon> GetById(int id)
         {
-            return _context.Coupons.Include(c => c.User).Include(c => c.Course).FirstOrDefault(x => x.Id == id);
+            return await  _context.Coupons.Include(c => c.User).Include(c => c.Course).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Coupon UpdateItem(int id, Coupon item)
+        public async Task UpdateItem(int id, Coupon item)
         {
-            var Coupon = GetById(id);
+            var Coupon =await  GetById(id);
             Coupon.Name = item.Name;
             Coupon.Status = item.Status;
             Coupon.Value = item.Value;
@@ -51,8 +51,7 @@ namespace Repository.Repositories
             Coupon.StartDate = item.StartDate;
             Coupon.IsPercentages = item.IsPercentages;
             Coupon.CourseId = item.CourseId;
-            _context.save();
-            return GetById(id);
+            await  _context.SaveAsync();
         }
     }
 }

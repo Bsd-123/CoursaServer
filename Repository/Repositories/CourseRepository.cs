@@ -16,33 +16,32 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Course AddItem(Course item)
+        public async Task<Course> AddItem(Course item)
         {
             _context.Courses.Add(item);
-
-            _context.save();
+            await  _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.Courses.Remove(GetById(id));
-            _context.save();
+            _context.Courses.Remove( await  GetById(id));
+            await  _context.SaveAsync();
         }
 
-        public List<Course> GetAll()
+        public async Task<List<Course>> GetAll()
         {
-            return _context.Courses.Include(c => c.Skill).Include(c => c.Owner).ToList();
+            return await  _context.Courses.Include(c => c.Skill).Include(c => c.Owner).ToListAsync();
         }
 
-        public Course GetById(int id)
+        public async Task<Course> GetById(int id)
         {
-            return _context.Courses.Include(c => c.Skill).Include(c => c.Owner).FirstOrDefault(x => x.Id == id);
+            return await  _context.Courses.Include(c => c.Skill).Include(c => c.Owner).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Course UpdateItem(int id, Course item)
+        public async Task UpdateItem(int id, Course item)
         {
-            var Course = GetById(id);
+            var Course = await  GetById(id);
             Course.Name = item.Name;
             Course.Status = item.Status;
             Course.Description = item.Description;
@@ -50,8 +49,7 @@ namespace Repository.Repositories
             Course.Image = item.Image;
             Course.OwnerId = item.OwnerId;
             Course.SkillId = item.SkillId;
-            _context.save();
-            return GetById(id);
+            await  _context.SaveAsync();
         }
     }
 }

@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(EnrollmentDto item)
+        public async Task<EnrollmentDto> AddItem(EnrollmentDto item)
         {
-            var result = mapper.Map<Enrollment, EnrollmentDto>(repository.AddItem(mapper.Map<EnrollmentDto, Enrollment>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<Enrollment, EnrollmentDto>(await repository.AddItem(mapper.Map<EnrollmentDto, Enrollment>(item)));
         }
 
-        public void DeleteItem(int id1, int id2)
+        public async Task DeleteItem(int id1, int id2)
         {
-            repository.DeleteItem(id1, id2);
+            await repository.DeleteItem(id1, id2);
         }
 
-        public List<EnrollmentDto> GetAll()
+        public async Task<List<EnrollmentDto>> GetAll()
         {
-            return mapper.Map<List<Enrollment>, List<EnrollmentDto>>(repository.GetAll());
+            return mapper.Map<List<Enrollment>, List<EnrollmentDto>>(await repository.GetAll());
         }
 
-        public EnrollmentDto GetById(int id1, int id2)
+        public async Task<EnrollmentDto> GetById(int id1, int id2)
         {
-            return mapper.Map<Enrollment, EnrollmentDto>(repository.GetById(id1, id2));
+            return mapper.Map<Enrollment, EnrollmentDto>(await repository.GetById(id1, id2));
         }
 
-        public Task<IActionResult> UpdateItem(int id1, int id2, EnrollmentDto item)
+        public async Task UpdateItem(int id1, int id2, EnrollmentDto item)
         {
-            repository.UpdateItem(id1, id2, mapper.Map<EnrollmentDto, Enrollment>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id1, id2, mapper.Map<EnrollmentDto, Enrollment>(item));
         }
     }
 }

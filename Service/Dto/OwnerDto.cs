@@ -15,7 +15,7 @@ namespace Service.Dto
         public int UserId { get; set; }
         public string OwnerName { get; set; } = null!;
 
-        public byte[]? Image { get; set; }
+        public string? Image { get; set; }
 
         public double Percentage { get; set; }
 

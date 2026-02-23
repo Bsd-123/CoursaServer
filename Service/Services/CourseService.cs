@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(CourseDto item)
+        public async Task<CourseDto> AddItem(CourseDto item)
         {
-            var result = mapper.Map<Course, CourseDto>(repository.AddItem(mapper.Map<CourseDto, Course>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<Course, CourseDto>(await repository.AddItem(mapper.Map<CourseDto, Course>(item)));
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            repository.DeleteItem(id);
+            await repository.DeleteItem(id);
         }
 
-        public List<CourseDto> GetAll()
+        public async Task<List<CourseDto>> GetAll()
         {
-            return mapper.Map<List<Course>, List<CourseDto>>(repository.GetAll());
+            return mapper.Map<List<Course>, List<CourseDto>>(await repository.GetAll());
         }
 
-        public CourseDto GetById(int id)
+        public async Task<CourseDto> GetById(int id)
         {
-            return mapper.Map<Course, CourseDto>(repository.GetById(id));
+            return mapper.Map<Course, CourseDto>(await repository.GetById(id));
         }
 
-        public Task<IActionResult> UpdateItem(int id, CourseDto item)
+        public async Task UpdateItem(int id, CourseDto item)
         {
-            repository.UpdateItem(id,mapper.Map<CourseDto, Course>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id,mapper.Map<CourseDto, Course>(item));
         }
     }
 }

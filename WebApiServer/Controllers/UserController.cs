@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interfaces;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,33 +19,57 @@ namespace WebApiServer.Controllers
             this.service = service;
         }
         [HttpGet]
-        public List<UserDto> Get()
+        [Authorize(Roles = "admin")]
+        public async Task<List<UserDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public UserDto Get(int id)
+        [Authorize]
+        public async Task<UserDto> Get(int id)
         {
-            return service.GetById(id);
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var user = await service.GetById(id);
+            if (user != null)
+            {
+                if (currentUserRole == "owner" || currentUserId == user.Id)
+                {
+                    return await service.GetById(id);
+                }
+                    Response.StatusCode = 403;
+                    return null;
+			}
+            Response.StatusCode = 404;
+            return null;
         }
 
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserDto value)
+        [Authorize]
+        public async Task Put(int id, [FromBody] UserDto value)
         {
-            return await service.UpdateItem(id,value);
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (currentUserId != id)
+            {
+                Response.StatusCode = 403;
+                return;
+            }
+            await service.UpdateItem(id, value);
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Authorize(Roles = "admin")]
+        public async Task Delete(int id)
         {
-            var value = service.GetById(id);
+            var value = await service.GetById(id);
             value.Role = "Delete";
-            service.UpdateItem(id, value);
+            await service.UpdateItem(id, value);
         }
     }
 }

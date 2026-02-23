@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Entities;
 using Service.Dto;
 using Service.Interfaces;
 using Service.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Claims;
 using System.Text;
 
@@ -28,17 +28,17 @@ namespace WebApiServer.Controllers
 
         // POST api/<LoginController>
         [HttpPost("login")]
-        public IActionResult Post([FromBody] UserLogin user)
+        public async Task<IActionResult> Post([FromBody] UserLogin user)
         {
-            var user1 = login.Authenticate(user);
+            var user1 =await  login.Authenticate(user);
             if (user1 != null)
             {
-                return Ok(GenerateToken(user1));
+                return Ok(new { user = user1, token = GenerateToken(user1) });
             }
             return BadRequest("user not found...");
         }
         [HttpPost("register")] // הכתובת תהיה api/auth/register
-        public IActionResult Register([FromBody] User newUser)
+        public async Task<IActionResult> Register([FromBody] User newUser)
         {
             if(newUser == null || string.IsNullOrEmpty(newUser.Email) || string.IsNullOrEmpty(newUser.Password))
             {
@@ -50,7 +50,7 @@ namespace WebApiServer.Controllers
             }
 
             // 2. שמירת המשתמש החדש במסד הנתונים (כולל Hashing לסיסמה!)
-            var registeredUser = login.AddUser(newUser);
+            var registeredUser =await  login.AddUser(newUser);
 
             if (registeredUser == null)
                 return BadRequest("הרישום נכשל או שמשתמש כבר קיים");
@@ -58,17 +58,32 @@ namespace WebApiServer.Controllers
             // 3. אופציונלי: החזרת טוקן מיד בסיום ההרשמה כדי שהמשתמש יתחבר אוטומטית
             return Ok(GenerateToken(registeredUser));
         }
+        [HttpGet("GetUserByToken")]
+        [Authorize] // זה מבטיח שה-Token נבדק אוטומטית
+        public IActionResult GetUserByToken()
+        {
+            // המידע על המשתמש (כמו ID או Name) נמצא בתוך ה-Claims של ה-Identity
+            var userName = User.Identity?.Name;
+            Console.WriteLine(userName);
+            if (userName != null)
+            {
+                // כאן את יכולה לשלוף שוב את פרטי המשתמש מהדיאטבייס במידת הצורך
+                return Ok(new { message = $"Welcome back, {userName}!" });
+            }
+
+            return Unauthorized("Invalid token");
+        }
         //יצירת טוקן
-        private string GenerateToken(User user1)
+        private string GenerateToken(UserDto user1)
         {
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
             //אלגוריתם להצפנה
             var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
-            new Claim(ClaimTypes.Name,user1.Name),
+            new Claim(ClaimTypes.NameIdentifier,user1.Id.ToString()),
             new Claim(ClaimTypes.Email,user1.Email),
             new Claim(ClaimTypes.Role,user1.Role),
-            //new Claim("Id",user1.Id.ToString()),
+            //new Claim(ClaimTypes.NameIdentifier,user1.Id.ToString()),
             //new Claim(ClaimTypes.GivenName,user1.Name)
             };
             var token = new JwtSecurityToken(config["Jwt:Issuer"], config["Jwt:Audience"],
@@ -77,5 +92,6 @@ namespace WebApiServer.Controllers
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        
     }
 }

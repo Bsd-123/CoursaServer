@@ -16,33 +16,32 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Enrollment AddItem(Enrollment item)
+        public async Task<Enrollment> AddItem(Enrollment item)
         {
             _context.Enrollments.Add(item);
-
-            _context.save();
+            await _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id1, int id2)
+        public async Task DeleteItem(int id1, int id2)
         {
-            _context.Enrollments.Remove(GetById(id1,id2));
-            _context.save();
+            _context.Enrollments.Remove(await  GetById(id1,id2));
+            await _context.SaveAsync();
         }
 
-        public List<Enrollment> GetAll()
+        public async Task<List<Enrollment>> GetAll()
         {
-            return _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).ToList();
+            return await _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).ToListAsync();
         }
 
-        public Enrollment GetById(int id1, int id2)
+        public async Task<Enrollment> GetById(int id1, int id2)
         {
-            return _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).FirstOrDefault(x => x.UserId == id1 && x.CourseId ==id2);
+            return await  _context.Enrollments.Include(e => e.User).Include(e => e.Course).Include(e => e.Coupon).FirstOrDefaultAsync(x => x.UserId == id1 && x.CourseId ==id2);
         }
 
-        public Enrollment UpdateItem(int id1, int id2, Enrollment item)
+        public async Task UpdateItem(int id1, int id2, Enrollment item)
         {
-            var Enrollment = GetById(id1,id2);
+            var Enrollment = await  GetById(id1,id2);
             Enrollment.StartDate = item.StartDate;
             Enrollment.EndDate = item.EndDate;
             Enrollment.FullPrice = item.FullPrice;
@@ -50,8 +49,7 @@ namespace Repository.Repositories
             Enrollment.ReceptionNumber = item.ReceptionNumber;
             Enrollment.PaymentNumber = item.PaymentNumber;
             Enrollment.CouponId = item.CouponId;
-            _context.save();
-            return GetById(id1, id2);
+            await _context.SaveAsync();
         }
     }
 }

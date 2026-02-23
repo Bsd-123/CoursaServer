@@ -1,4 +1,5 @@
-﻿using Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,36 +16,37 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public ContentType AddItem(ContentType item)
+        public async Task<ContentType> AddItem(ContentType item)
         {
             _context.ContentTypes.Add(item);
-            _context.save();
+            await  _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.ContentTypes.Remove(GetById(id));
-            _context.save();
+            var entity =await  GetById(id);
+            _context.ContentTypes.Remove(entity);
+            await  _context.SaveAsync();
         }
 
-        public List<ContentType> GetAll()
+        public async Task<List<ContentType>> GetAll()
         {
-            return _context.ContentTypes.ToList();
+            return await  _context.ContentTypes.ToListAsync();
         }
 
-        public ContentType GetById(int id)
+        public async Task<ContentType> GetById(int id)
         {
-            return _context.ContentTypes.FirstOrDefault(x => x.Id == id);
+            var result = await  _context.ContentTypes.FirstOrDefaultAsync(x => x.Id == id);
+            return result;
         }
 
-        public ContentType UpdateItem(int id, ContentType item)
+        public async Task UpdateItem(int id, ContentType item)
         {
-            var ContentType = GetById(id);
+            var ContentType = await  GetById(id);
             ContentType.Name = item.Name;
             ContentType.DisplayIcon = item.DisplayIcon;
-            _context.save();
-            return GetById(id);
+            await  _context.SaveAsync();
         }
     }
 }

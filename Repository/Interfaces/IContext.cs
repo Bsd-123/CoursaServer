@@ -20,6 +20,6 @@ namespace Repository.Interfaces
         public DbSet<Progress> Progresses { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<User> Users { get; set; }
-        public void save();
+        Task SaveAsync();
     }
 }

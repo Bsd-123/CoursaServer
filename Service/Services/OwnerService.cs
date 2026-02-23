@@ -24,39 +24,38 @@ namespace Service.Services
             this.repository2 = repository2;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(OwnerDto item)
+        public async Task<OwnerDto> AddItem(OwnerDto item)
         {
             var owner = mapper.Map<OwnerDto, Owner>(item);
             var user = owner.User;
             user.Role = "owner";
-            repository2.UpdateItem(user.Id,user);
-            var result = mapper.Map<Owner, OwnerDto>(repository.AddItem(owner));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            await repository2.UpdateItem(user.Id,user);
+            var result = mapper.Map<Owner, OwnerDto>( await repository.AddItem(owner));
+            return result;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            var owner =repository.GetById(id);
+            var owner =await repository.GetById(id);
             owner.Percentage = -1;
             owner.User.Role = "user";
-            repository2.UpdateItem(owner.User.Id, owner.User);
-            repository.UpdateItem(id,owner);
+            await repository2.UpdateItem(owner.User.Id, owner.User);
+            await repository.UpdateItem(id, owner);
         }
 
-        public List<OwnerDto> GetAll()
+        public async Task<List<OwnerDto>> GetAll()
         {
-            return mapper.Map<List<Owner>, List<OwnerDto>>(repository.GetAll());
+            return mapper.Map<List<Owner>, List<OwnerDto>>(await repository.GetAll());
         }
 
-        public OwnerDto GetById(int id)
+        public async Task<OwnerDto> GetById(int id)
         {
-            return mapper.Map<Owner, OwnerDto>(repository.GetById(id));
+            return mapper.Map<Owner, OwnerDto>(await repository.GetById(id));
         }
 
-        public Task<IActionResult> UpdateItem(int id, OwnerDto item)
+        public async Task UpdateItem(int id, OwnerDto item)
         {
-            repository.UpdateItem(id, mapper.Map<OwnerDto, Owner>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id, mapper.Map<OwnerDto, Owner>(item));
         }
     }
 }

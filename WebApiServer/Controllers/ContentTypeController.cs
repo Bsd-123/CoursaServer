@@ -19,42 +19,48 @@ namespace WebApiServer.Controllers
         }
         // GET: api/<ContentTypeController>
         [HttpGet]
-        public List<ContentTypeDto> Get()
+		[Authorize(Roles = "owner")]
+		public async Task<List<ContentTypeDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<ContentTypeController>/5
         [HttpGet("{id}")]
-        public ContentTypeDto Get(int id)
+        public async Task<ContentTypeDto> Get(int id)
         {
-            return service.GetById(id);
+            return await service.GetById(id);
         }
 
         // POST api/<ContentTypeController>
         [HttpPost]
-        [Consumes("multipart/form-data")]
         [Authorize(Roles = "owner")]
-        public async Task<IActionResult> Post([FromForm] ContentTypeDto value)
+        public async Task<ContentTypeDto> Post([FromForm] ContentTypeDto value)
         {
-            if (value.FileImage != null)
-            {
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
-                }
-            }
+			if (value.FileImage != null)
+			{
+				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+				if (!Directory.Exists(folderPath))
+					Directory.CreateDirectory(folderPath);
 
-            return await service.AddItem(value);
+				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fullPath = Path.Combine(folderPath, fileName);
+
+				using (var fs = new FileStream(fullPath, FileMode.Create))
+				{
+					await value.FileImage.CopyToAsync(fs);
+				}
+				var urlForClient = "/Images/" + fileName;
+				value.DisplayIcon = urlForClient;
+			}
+			return await  service.AddItem(value);
         }
 
         // PUT api/<ContentTypeController>/5
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
         [Authorize(Roles = "owner")]
-        public async Task<IActionResult> Put(int id, [FromForm] ContentTypeDto value)
+        public async Task Put(int id, [FromForm] ContentTypeDto value)
         {
             if (value.FileImage != null)
             {
@@ -67,19 +73,20 @@ namespace WebApiServer.Controllers
 
                 using (var fs = new FileStream(fullPath, FileMode.Create))
                 {
-                    await value.FileImage.CopyToAsync(fs); 
+                    await  value.FileImage.CopyToAsync(fs); 
                 }
                 var urlForClient = "/Images/" + fileName;
                 value.DisplayIcon = urlForClient;
             }
-            return await service.UpdateItem(id, value);
+            await service.UpdateItem(id, value);
         }
 
         // DELETE api/<ContentTypeController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+		[Authorize(Roles = "admin")]
+		public async Task Delete(int id)
         {
-            service.DeleteItem(id);
+            await service.DeleteItem(id);
         }
     }
 }

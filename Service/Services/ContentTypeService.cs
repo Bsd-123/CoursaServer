@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(ContentTypeDto item)
+        public async Task<ContentTypeDto> AddItem(ContentTypeDto item)
         {
-            var result =  mapper.Map<ContentType, ContentTypeDto>(repository.AddItem(mapper.Map<ContentTypeDto, ContentType>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<ContentType, ContentTypeDto>(await repository.AddItem(mapper.Map<ContentTypeDto, ContentType>(item)));
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            repository.DeleteItem(id);
+           await repository.DeleteItem(id);
         }
 
-        public List<ContentTypeDto> GetAll()
+        public async Task<List<ContentTypeDto>> GetAll()
         {
-            return mapper.Map<List<ContentType>, List<ContentTypeDto>>(repository.GetAll());
+            return mapper.Map<List<ContentType>, List<ContentTypeDto>>(await repository.GetAll());
         }
 
-        public ContentTypeDto GetById(int id)
+        public async Task<ContentTypeDto> GetById(int id)
         {
-            return mapper.Map<ContentType, ContentTypeDto>(repository.GetById(id));
+            return mapper.Map<ContentType, ContentTypeDto>(await repository.GetById(id));
         }
 
-        public Task<IActionResult> UpdateItem(int id, ContentTypeDto item)
+        public async Task UpdateItem(int id, ContentTypeDto item)
         {
-            repository.UpdateItem(id, mapper.Map<ContentTypeDto, ContentType>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id, mapper.Map<ContentTypeDto, ContentType>(item));
         }
     }
 }

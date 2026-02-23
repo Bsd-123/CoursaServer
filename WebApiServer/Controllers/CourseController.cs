@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interfaces;
 
@@ -17,37 +18,48 @@ namespace WebApiServer.Controllers
         }
         // GET: api/<CourseController>
         [HttpGet]
-        public List<CourseDto> Get()
+        public async Task<List<CourseDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<CourseController>/5
         [HttpGet("{id}")]
-        public CourseDto Get(int id)
+        public async Task<CourseDto> Get(int id)
         {
-            return service.GetById(id);
+            return await service.GetById(id);
         }
 
         // POST api/<CourseController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] CourseDto value)
+		[Authorize(Roles = "owner")]
+		public async Task<CourseDto> Post([FromForm] CourseDto value)
         {
-            if (value.FileImage != null)
-            {
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
-                }
-            }
-            return await service.AddItem(value);
+			if (value.FileImage != null)
+			{
+				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+				if (!Directory.Exists(folderPath))
+					Directory.CreateDirectory(folderPath);
+
+				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fullPath = Path.Combine(folderPath, fileName);
+
+				using (var fs = new FileStream(fullPath, FileMode.Create))
+				{
+					await value.FileImage.CopyToAsync(fs); // שימוש ב-Async
+				}
+				var urlForClient = "/Images/" + fileName;
+                value.Image = urlForClient;
+			}
+            value.Owner = null;
+            value.Skill = null;
+			return await service.AddItem(value);
         }
 
         // PUT api/<CourseController>/5
         [HttpPut("{id}")]
-        async public Task<IActionResult> Put(int id, [FromForm] CourseDto value)
+		[Authorize(Roles = "owner")]
+		async public Task Put(int id, [FromForm] CourseDto value)
         {
             if (value.FileImage != null)
             {
@@ -60,18 +72,23 @@ namespace WebApiServer.Controllers
 
                 using (var fs = new FileStream(fullPath, FileMode.Create))
                 {
-                    await value.FileImage.CopyToAsync(fs); // שימוש ב-Async
+                    await  value.FileImage.CopyToAsync(fs); // שימוש ב-Async
                 }
                 var urlForClient = "/Images/" + fileName;
+                value.Image = urlForClient;
             }
-            return await service.UpdateItem(id, value);
+			value.Owner = null;
+			value.Skill = null;
+			await service.UpdateItem(id, value);
         }
 
         // DELETE api/<CourseController>/5
+
         [HttpDelete("{id}")]
-        public void Delete(int id)
+		[Authorize(Roles = "owner,admin")]
+		public async Task Delete(int id)
         {
-            service.DeleteItem(id);
+            await service.DeleteItem(id);
         }
     }
 }

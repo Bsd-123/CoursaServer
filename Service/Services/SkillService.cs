@@ -21,31 +21,29 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
-        public Task<IActionResult> AddItem(SkillDto item)
+        public async Task<SkillDto> AddItem(SkillDto item)
         {
-            var result = mapper.Map<Skill, SkillDto>(repository.AddItem(mapper.Map<SkillDto, Skill>(item)));
-            return Task.FromResult<IActionResult>(new CreatedAtActionResult(null, null, null, result));
+            return mapper.Map<Skill, SkillDto>(await repository.AddItem(mapper.Map<SkillDto, Skill>(item)));
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            repository.DeleteItem(id);
+            await repository.DeleteItem(id);
         }
 
-        public List<SkillDto> GetAll()
+        public async Task<List<SkillDto>> GetAll()
         {
-            return mapper.Map<List<Skill>, List<SkillDto>>(repository.GetAll());
+            return mapper.Map<List<Skill>, List<SkillDto>>(await repository.GetAll());
         }
 
-        public SkillDto GetById(int id)
+        public async Task<SkillDto> GetById(int id)
         {
-            return mapper.Map<Skill, SkillDto>(repository.GetById(id));
+            return mapper.Map<Skill, SkillDto>(await repository.GetById(id));
         }
 
-        public Task<IActionResult> UpdateItem(int id, SkillDto item)
+        public async Task UpdateItem(int id, SkillDto item)
         {
-            repository.UpdateItem(id, mapper.Map<SkillDto, Skill>(item));
-            return Task.FromResult<IActionResult>(new NoContentResult());
+            await repository.UpdateItem(id, mapper.Map<SkillDto, Skill>(item));
         }
     }
 }

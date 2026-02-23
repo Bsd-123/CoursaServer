@@ -9,19 +9,19 @@ namespace Service.Interfaces
 {
     public interface IServiceBase<T>
     {
-        List<T> GetAll();
-        Task<IActionResult> AddItem(T item);
+        Task<List<T>> GetAll();
+        Task<T> AddItem(T item);
     }
     public interface IService<T> : IServiceBase<T>
     {
-        T GetById(int id);
-        Task<IActionResult> UpdateItem(int id, T item);
-        void DeleteItem(int id);
+        Task<T> GetById(int id);
+        Task UpdateItem(int id, T item);
+        Task DeleteItem(int id);
     }
     public interface IServiceDouble<T> : IServiceBase<T>
     {
-        T GetById(int id1, int id2);
-        Task<IActionResult> UpdateItem(int id1, int id2, T item);
-        void DeleteItem(int id1, int id2);
+        Task<T> GetById(int id1, int id2);
+        Task UpdateItem(int id1, int id2, T item);
+        Task DeleteItem(int id1, int id2);
     }
 }

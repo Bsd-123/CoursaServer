@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interfaces;
 
@@ -17,55 +18,72 @@ namespace WebApiServer.Controllers
         }
         // GET: api/<SkillController>
         [HttpGet]
-        public List<SkillDto> Get()
+        public async Task<List<SkillDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<SkillController>/5
         [HttpGet("{id}")]
-        public SkillDto Get(int id)
+        public async Task<SkillDto> Get(int id)
         {
-            return service.GetById(id);
+            return await service.GetById(id);
         }
 
         // POST api/<SkillController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] SkillDto value)
+		[Authorize(Roles = "owner,admin")]
+		public async Task<SkillDto> Post([FromForm] SkillDto value)
         {
-            if (value.FileImage != null)
-            {
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
-                }
-            }
-            return await service.AddItem(value);
+			if (value.FileImage != null)
+			{
+				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+				if (!Directory.Exists(folderPath))
+					Directory.CreateDirectory(folderPath);
+
+				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fullPath = Path.Combine(folderPath, fileName);
+
+				using (var fs = new FileStream(fullPath, FileMode.Create))
+				{
+					await value.FileImage.CopyToAsync(fs);
+				}
+				var urlForClient = "/Images/" + fileName;
+				value.Image = urlForClient;
+			}
+			return await service.AddItem(value);
         }
 
-        // PUT api/<SkillController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm] SkillDto value)
+		// PUT api/<SkillController>/5
+		[Authorize(Roles = "admin")]
+		[HttpPut("{id}")]
+        public async Task Put(int id, [FromForm] SkillDto value)
         {
-            if (value.FileImage != null)
-            {
-                var path = Path.Combine(Environment.CurrentDirectory, "Images/", value.FileImage.FileName);
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                {
-                    value.FileImage.CopyTo(fs);
-                    fs.Close();
-                }
-            }
-            return await service.UpdateItem(id, value);
+			if (value.FileImage != null)
+			{
+				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+				if (!Directory.Exists(folderPath))
+					Directory.CreateDirectory(folderPath);
+
+				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fullPath = Path.Combine(folderPath, fileName);
+
+				using (var fs = new FileStream(fullPath, FileMode.Create))
+				{
+					await value.FileImage.CopyToAsync(fs);
+				}
+				var urlForClient = "/Images/" + fileName;
+				value.Image = urlForClient;
+			}
+			await service.UpdateItem(id, value);
         }
 
         // DELETE api/<SkillController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+		[Authorize(Roles = "admin")]
+		public async Task Delete(int id)
         {
-            service.DeleteItem(id);
+            await service.DeleteItem(id);
         }
     }
 }

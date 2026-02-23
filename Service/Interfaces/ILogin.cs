@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Repository.Entities;
+using Service.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Repository.Entities;
-using Service.Dto;
 namespace Service.Interfaces
 {
     public interface ILogin
     {
-        public User Authenticate(UserLogin user);
-        public User GetByEmail(string email);
-        public User AddUser(User item);
+        public Task<UserDto> Authenticate(UserLogin user);
+        public Task<UserDto> GetByEmail(string email);
+        public Task<UserDto> AddUser(User item);
     }
 }

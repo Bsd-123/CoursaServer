@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
 using Service.Interfaces;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,37 +21,62 @@ namespace WebApiServer.Controllers
         }
         // GET: api/<EnrollmentController>
         [HttpGet]
-        public List<EnrollmentDto> Get()
+		[Authorize(Roles = "admin")]
+		public async Task<List<EnrollmentDto>> Get()
         {
-            return service.GetAll();
+            return await service.GetAll();
         }
 
         // GET api/<EnrollmentController>/5
         [HttpGet("{id}")]
-        public EnrollmentDto Get(int id1, int id2)
+		[Authorize(Roles = "owner,admin")]
+		public async Task<EnrollmentDto> Get(int id1, int id2)
         {
-            return service.GetById(id1, id2);
+			var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+			var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+			// 2. שליפת הנתון מהשירות
+			var enrollment = await service.GetById(id1, id2);
+
+            if (enrollment == null) { 
+                Response.StatusCode = 404;
+                return null;
+            }
+
+			if (currentUserRole == "owner")
+			{
+				if (enrollment.Course.OwnerId != currentUserId)
+				{
+					Response.StatusCode = 403;
+					return null;
+				}
+			}
+			return enrollment;
         }
 
         // POST api/<EnrollmentController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] EnrollmentDto  value)
+		[Authorize]
+		public async Task<EnrollmentDto> Post([FromBody] EnrollmentDto  value)
         {
             return await service.AddItem(value);
         }
 
-        // PUT api/<EnrollmentController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id1, int id2, [FromForm] EnrollmentDto value)
+		// PUT api/<EnrollmentController>/5
+		
+		[HttpPut("{id}")]
+        [Authorize]
+        public async Task Put(int id1, int id2, [FromForm] EnrollmentDto value)
         {
-            return await service.UpdateItem(id1, id2, value);
+            await service.UpdateItem(id1, id2, value);
         }
 
-        // DELETE api/<EnrollmentController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id1, int id2)
+		// DELETE api/<EnrollmentController>/5
+		[Authorize(Roles = "admin")]
+		[HttpDelete("{id}")]
+        public async Task Delete(int id1, int id2)
         {
-            service.DeleteItem(id1, id2);
+            await service.DeleteItem(id1, id2);
         }
     }
 }

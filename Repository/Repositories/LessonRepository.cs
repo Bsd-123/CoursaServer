@@ -16,32 +16,32 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Lesson AddItem(Lesson item)
+        public async Task<Lesson> AddItem(Lesson item)
         {
             _context.Lessons.Add(item);
-            _context.save();
+            await  _context.SaveAsync();
             return item;
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            _context.Lessons.Remove(GetById(id));
-            _context.save();
+            _context.Lessons.Remove(await GetById(id));
+            await _context.SaveAsync();
         }
 
-        public List<Lesson> GetAll()
+        public async Task<List<Lesson>> GetAll()
         {
-            return _context.Lessons.Include(l => l.Course).Include(l => l.Type).ToList();
+            return await _context.Lessons.Include(l => l.Course).Include(l => l.Type).ToListAsync();
         }
 
-        public Lesson GetById(int id)
+        public async Task<Lesson> GetById(int id)
         {
-            return _context.Lessons.Include(l => l.Course).Include(l => l.Type).FirstOrDefault(x => x.Id == id);
+            return await _context.Lessons.Include(l => l.Course).Include(l => l.Type).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Lesson UpdateItem(int id, Lesson item)
+        public async Task UpdateItem(int id, Lesson item)
         {
-            var Lesson = GetById(id);
+            var Lesson = await GetById(id);
             Lesson.Name = item.Name;
             Lesson.Content = item.Content;
             Lesson.IsFree = item.IsFree;
@@ -50,8 +50,7 @@ namespace Repository.Repositories
             Lesson.MimeType = item.MimeType;
             Lesson.Idx = item.Idx;
             Lesson.CourseId = item.CourseId;
-            _context.save();
-            return GetById(id);
+            await _context.SaveAsync();
         }
     }
 }
