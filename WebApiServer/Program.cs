@@ -45,7 +45,7 @@ builder.Services.AddScoped<IServiceDouble<EnrollmentDto>, EnrollmentService>();
 builder.Services.AddScoped<IServiceDouble<ProgressDto>, ProgressService>();
 builder.Services.AddScoped<IService<LessonDto>, LessonService>();
 builder.Services.AddScoped<IService<CouponDto>, CouponService>();
-builder.Services.AddScoped<ILogin, UserLoginService>();
+builder.Services.AddScoped<ILogin, UserForLoginService>();
 
 
 builder.Services.AddAutoMapper(cfg =>

@@ -25,6 +25,10 @@ public partial class Coupon
 
     public int? UserId { get; set; }
 
+    public string? RequirementsJson { get; set; }
+
+    public string? Description { get; set; }
+
     public virtual Course Course { get; set; } = null!;
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();

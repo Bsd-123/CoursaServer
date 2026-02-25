@@ -28,7 +28,7 @@ namespace WebApiServer.Controllers
 
         // POST api/<LoginController>
         [HttpPost("login")]
-        public async Task<IActionResult> Post([FromBody] UserLogin user)
+        public async Task<IActionResult> Post([FromBody] UserForLogin user)
         {
             var user1 =await  login.Authenticate(user);
             if (user1 != null)

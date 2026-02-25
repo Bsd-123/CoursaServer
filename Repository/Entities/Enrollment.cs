@@ -23,6 +23,8 @@ public partial class Enrollment
 
     public int? ReceptionNumber { get; set; }
 
+    public string Id { get; set; } = null!;
+
     public virtual Coupon? Coupon { get; set; }
 
     public virtual Course Course { get; set; } = null!;

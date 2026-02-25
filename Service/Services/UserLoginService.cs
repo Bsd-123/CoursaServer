@@ -12,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public class UserLoginService :ILogin
+    public class UserForLoginService :ILogin
     {
         private readonly IRepository<User> _repository;
         private readonly IMapper mapper;
-        public UserLoginService(IRepository<User> _repository, IMapper mapper)
+        public UserForLoginService(IRepository<User> _repository, IMapper mapper)
         {
             this._repository = _repository;
             this.mapper = mapper;
         }
-        public async Task<UserDto> Authenticate(UserLogin user)
+        public async Task<UserDto> Authenticate(UserForLogin user)
         {
             return mapper.Map <User,UserDto > ((await _repository.GetAll()).FirstOrDefault(x => x.Email == user.Email && x.Password == user.Password));
         }
@@ -33,7 +33,7 @@ namespace Service.Services
         {
             return mapper.Map<User, UserDto>(await _repository.AddItem(item));
         }
-        //public async Task<UserDto> Authenticate(UserLogin user)
+        //public async Task<UserDto> Authenticate(UserForLogin user)
         //{
         //    // קריאה לפונקציה ב-Repository שבודקת רק משתמש אחד ב-DB
         //    var authUser = await repository.GetByEmailAndPassword(user.Email, user.Password);

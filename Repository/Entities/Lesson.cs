@@ -23,6 +23,8 @@ public partial class Lesson
 
     public bool? Status { get; set; }
 
+    public int? DurationSec { get; set; }
+
     public virtual Course Course { get; set; } = null!;
 
     public virtual ICollection<Progress> Progresses { get; set; } = new List<Progress>();

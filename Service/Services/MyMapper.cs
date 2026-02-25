@@ -33,8 +33,8 @@ namespace Service.Services
             
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
-            CreateMap<User, UserLogin>();
-            CreateMap<UserLogin, User>();
+            CreateMap<User, UserForLogin>();
+            CreateMap<UserForLogin, User>();
         }
         //public byte[] fromStringToByte(string mypath)
         //{

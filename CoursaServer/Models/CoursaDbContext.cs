@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
+
 namespace DBFirst.Models;
 
 public partial class CoursaDbContext : DbContext, IContext
@@ -34,15 +35,14 @@ public partial class CoursaDbContext : DbContext, IContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserLogin> UserLogins { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;database=coursaDB;trusted_connection=true;TrustServerCertificate=True");
     public async Task SaveAsync()
     {
         await SaveChangesAsync();
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=coursaDB;trusted_connection=true;TrustServerCertificate=True");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ContentType>(entity =>
@@ -52,11 +52,13 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.ToTable("content_type");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.DisplayIcon)
-                .HasMaxLength(100)
-                .HasColumnName("displayIcon");
+            entity.Property(e => e.AllowedExtensions).HasMaxLength(255);
+            entity.Property(e => e.DisplayIcon).HasColumnName("displayIcon");
+            entity.Property(e => e.DisplayName)
+                .HasMaxLength(50)
+                .HasColumnName("displayName");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .HasColumnName("name");
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
@@ -76,6 +78,9 @@ public partial class CoursaDbContext : DbContext, IContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CourseId).HasColumnName("courseId");
+            entity.Property(e => e.Description)
+                .HasMaxLength(250)
+                .HasColumnName("description");
             entity.Property(e => e.EndDate)
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
@@ -83,6 +88,7 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+            entity.Property(e => e.RequirementsJson).HasColumnName("requirementsJson");
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -111,10 +117,10 @@ public partial class CoursaDbContext : DbContext, IContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Description)
-                .HasMaxLength(150)
+                .HasMaxLength(255)
                 .HasColumnName("description");
             entity.Property(e => e.Image)
-                .HasMaxLength(100)
+                .HasMaxLength(255)
                 .HasColumnName("image");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -139,13 +145,14 @@ public partial class CoursaDbContext : DbContext, IContext
 
         modelBuilder.Entity<Enrollment>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.CourseId }).HasName("PK__enrollme__C9309802234E19A7");
-
             entity.ToTable("enrollment");
 
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.CourseId).HasColumnName("courseId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("id");
             entity.Property(e => e.CouponId).HasColumnName("couponId");
+            entity.Property(e => e.CourseId).HasColumnName("courseId");
             entity.Property(e => e.EndDate)
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
@@ -160,6 +167,7 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
                 .HasColumnName("status");
+            entity.Property(e => e.UserId).HasColumnName("userId");
 
             entity.HasOne(d => d.Coupon).WithMany(p => p.Enrollments)
                 .HasForeignKey(d => d.CouponId)
@@ -187,6 +195,7 @@ public partial class CoursaDbContext : DbContext, IContext
                 .HasMaxLength(100)
                 .HasColumnName("content");
             entity.Property(e => e.CourseId).HasColumnName("courseId");
+            entity.Property(e => e.DurationSec).HasColumnName("durationSec");
             entity.Property(e => e.Idx).HasColumnName("idx");
             entity.Property(e => e.MimeType)
                 .HasMaxLength(50)
@@ -218,8 +227,13 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.ToTable("owner");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreationDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Headline).HasMaxLength(150);
             entity.Property(e => e.Image)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("image");
             entity.Property(e => e.OwnerName)
                 .HasMaxLength(30)
@@ -247,6 +261,7 @@ public partial class CoursaDbContext : DbContext, IContext
 
             entity.Property(e => e.UserId).HasColumnName("userId");
             entity.Property(e => e.LessonId).HasColumnName("lessonId");
+            entity.Property(e => e.IsCompleted).HasColumnName("isCompleted");
             entity.Property(e => e.LastView)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -279,6 +294,7 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.Property(e => e.Name)
                 .HasMaxLength(30)
                 .HasColumnName("name");
+            entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Skills)
@@ -308,10 +324,30 @@ public partial class CoursaDbContext : DbContext, IContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("regDate");
+            entity.Property(e => e.ResetPasswordToken).HasMaxLength(255);
+            entity.Property(e => e.ResetTokenExpires).HasColumnType("datetime");
             entity.Property(e => e.Role)
                 .HasMaxLength(50)
                 .HasDefaultValueSql("(user_name())")
                 .HasColumnName("role");
+            entity.Property(e => e.Status).HasColumnName("status");
+        });
+
+        modelBuilder.Entity<UserLogin>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UserLogi__3214EC0746C7A5C2");
+
+            entity.Property(e => e.DeviceType).HasMaxLength(100);
+            entity.Property(e => e.Ipaddress)
+                .HasMaxLength(50)
+                .HasColumnName("IPAddress");
+            entity.Property(e => e.LoginDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserLogins)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_UserLogins_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);

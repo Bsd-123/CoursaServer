@@ -10,7 +10,7 @@ namespace Service.Interfaces
 {
     public interface ILogin
     {
-        public Task<UserDto> Authenticate(UserLogin user);
+        public Task<UserDto> Authenticate(UserForLogin user);
         public Task<UserDto> GetByEmail(string email);
         public Task<UserDto> AddUser(User item);
     }

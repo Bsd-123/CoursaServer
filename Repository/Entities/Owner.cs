@@ -19,6 +19,14 @@ public partial class Owner
 
     public bool? Status { get; set; }
 
+    public string? Description { get; set; }
+
+    public bool? IsVerified { get; set; }
+
+    public string? Headline { get; set; }
+
+    public DateTime? CreationDate { get; set; }
+
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public virtual User User { get; set; } = null!;

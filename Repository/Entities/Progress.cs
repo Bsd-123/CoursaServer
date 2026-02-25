@@ -13,6 +13,8 @@ public partial class Progress
 
     public DateTime? LastView { get; set; }
 
+    public bool? IsCompleted { get; set; }
+
     public virtual Lesson Lesson { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

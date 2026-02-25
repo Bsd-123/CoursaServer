@@ -15,6 +15,10 @@ public partial class ContentType
 
     public int? UserId { get; set; }
 
+    public string? DisplayName { get; set; }
+
+    public string? AllowedExtensions { get; set; }
+
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
     public virtual User? User { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Service.Dto
 {
-    public class UserLogin
+    public class UserForLogin
     {
         public string Email { get; set; }
         public string Password { get; set; }
