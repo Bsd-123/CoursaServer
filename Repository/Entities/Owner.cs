@@ -13,15 +13,13 @@ public partial class Owner
 
     public string? Image { get; set; }
 
-    public double Percentage { get; set; }
-
-    public string? PaymentNumber { get; set; }
+    public string PaymentNumber { get; set; } = null!;
 
     public bool? Status { get; set; }
 
     public string? Description { get; set; }
 
-    public bool? IsVerified { get; set; }
+    public bool IsVerified { get; set; }
 
     public string? Headline { get; set; }
 

@@ -37,11 +37,12 @@ namespace WebApiServer.Controllers
         {
 			if (value.FileImage != null)
 			{
-				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.FileImage.FileName, @"\s+", "_");
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 				if (!Directory.Exists(folderPath))
 					Directory.CreateDirectory(folderPath);
 
-				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
 				var fullPath = Path.Combine(folderPath, fileName);
 
 				using (var fs = new FileStream(fullPath, FileMode.Create))
@@ -63,11 +64,12 @@ namespace WebApiServer.Controllers
         {
             if (value.FileImage != null)
             {
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.FileImage.FileName, @"\s+", "_");
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
 
-                var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+                var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
                 var fullPath = Path.Combine(folderPath, fileName);
 
                 using (var fs = new FileStream(fullPath, FileMode.Create))

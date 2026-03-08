@@ -42,6 +42,7 @@ namespace Repository.Repositories
         {
             var Progress =await GetById(id1, id2);
             Progress.Seconds = item.Seconds;
+            Progress.IsCompleted = item.IsCompleted;
             Progress.LastView = item.LastView;
             await _context.SaveAsync();
         }

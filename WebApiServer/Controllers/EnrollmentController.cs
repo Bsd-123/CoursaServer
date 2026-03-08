@@ -4,6 +4,7 @@ using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
 using Service.Interfaces;
+using Service.Services;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,8 +15,8 @@ namespace WebApiServer.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private readonly IServiceDouble<EnrollmentDto> service;
-        public EnrollmentController(IServiceDouble<EnrollmentDto> service)
+        private readonly EnrollmentService service;
+        public EnrollmentController(EnrollmentService service)
         {
             this.service = service;
         }
@@ -26,32 +27,29 @@ namespace WebApiServer.Controllers
         {
             return await service.GetAll();
         }
+        [HttpGet("myCourses")]
+        [Authorize]
+        public async Task<List<EnrollmentDto>> GetByUserId()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return await service.GetByUserId(userId);
+        }
+        [HttpGet("myEnrollments/{id}")]
+        [Authorize]
+        public async Task<List<EnrollmentDto>> GetMineByCourseId(int id)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return await service.GetMineByCourseId(id, userId);
+        }
 
-        // GET api/<EnrollmentController>/5
+        // GET api/<EnrollmentController>/5 מה פשרה של הפעולה?
         [HttpGet("{id}")]
 		[Authorize(Roles = "owner,admin")]
-		public async Task<EnrollmentDto> Get(int id1, int id2)
+		public async Task<EnrollmentDto> Get(int id)
         {
-			var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-			var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-			// 2. שליפת הנתון מהשירות
-			var enrollment = await service.GetById(id1, id2);
-
-            if (enrollment == null) { 
-                Response.StatusCode = 404;
-                return null;
-            }
-
-			if (currentUserRole == "owner")
-			{
-				if (enrollment.Course.OwnerId != currentUserId)
-				{
-					Response.StatusCode = 403;
-					return null;
-				}
-			}
-			return enrollment;
+			var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+			var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            return await service.GetById(id, userId, userRole);
         }
 
         // POST api/<EnrollmentController>
@@ -62,21 +60,21 @@ namespace WebApiServer.Controllers
             return await service.AddItem(value);
         }
 
-		// PUT api/<EnrollmentController>/5
+		// PUT api/<EnrollmentController>/5 
 		
 		[HttpPut("{id}")]
         [Authorize]
-        public async Task Put(int id1, int id2, [FromForm] EnrollmentDto value)
+        public async Task Put(int id, [FromForm] EnrollmentDto value)
         {
-            await service.UpdateItem(id1, id2, value);
+            await service.UpdateItem(id, value);
         }
 
 		// DELETE api/<EnrollmentController>/5
 		[Authorize(Roles = "admin")]
 		[HttpDelete("{id}")]
-        public async Task Delete(int id1, int id2)
+        public async Task Delete(int id)
         {
-            await service.DeleteItem(id1, id2);
+            await service.DeleteItem(id);
         }
     }
 }

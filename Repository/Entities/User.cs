@@ -23,9 +23,9 @@ public partial class User
 
     public DateTime? ResetTokenExpires { get; set; }
 
-    public virtual ICollection<ContentType> ContentTypes { get; set; } = new List<ContentType>();
-
     public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
+
+    public virtual ICollection<CourseRating> CourseRatings { get; set; } = new List<CourseRating>();
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
@@ -36,4 +36,6 @@ public partial class User
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 
     public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();
+
+    public virtual ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
 }

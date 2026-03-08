@@ -46,6 +46,9 @@ namespace Repository.Repositories
             var ContentType = await  GetById(id);
             ContentType.Name = item.Name;
             ContentType.DisplayIcon = item.DisplayIcon;
+            ContentType.DisplayName = item.DisplayName;
+            ContentType.AllowedExtensions = item.AllowedExtensions;
+            ContentType.Status = item.Status;
             await  _context.SaveAsync();
         }
     }

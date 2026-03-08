@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Repository.Interfaces
 {
@@ -14,12 +15,15 @@ namespace Repository.Interfaces
         public DbSet<ContentType> ContentTypes { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseRating> CourseRatings { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Progress> Progresses { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
+        public DbSet<UserSkill> UserSkills { get; set; }    
         Task SaveAsync();
     }
 }

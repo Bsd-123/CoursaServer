@@ -21,16 +21,22 @@ namespace Service.Dto
 
         public double FullPrice { get; set; }
 
-        public int? CouponId { get; set; }
+        public int? CouponOwnerId { get; set; }
 
-        public int PaymentNumber { get; set; }
+        public string PaymentNumber { get; set; } = null!;
 
         public int? ReceptionNumber { get; set; }
 
-        public CouponDto? Coupon { get; set; }
+        public int Id { get; set; }
 
-        public CourseDto? Course { get; set; } = null!;
+        public int? CouponManagerId { get; set; }
 
-        public UserDto? User { get; set; } = null!;
+        public CouponDto? CouponManager { get; set; }
+
+        public CouponDto? CouponOwner { get; set; }
+
+        public CourseDto Course { get; set; } = null!;
+
+        public UserDto User { get; set; } = null!;
     }
 }

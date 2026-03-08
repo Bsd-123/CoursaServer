@@ -1,0 +1,22 @@
+[
+  {
+    "question": "מה הוא תג ה-HTML המשמש להגדרת כותרת ראשית?",
+    "options": [ "<h1>", "<title>", "<header>", "<main>" ],
+    "correct": 0
+  },
+  {
+    "question": "איזה מאפיין CSS משמש לשינוי צבע הטקסט?",
+    "options": [ "background-color", "font-color", "color", "text-color" ],
+    "correct": 2
+  },
+  {
+    "question": "מה ההבדל בין let ל-const ב-JavaScript?",
+    "options": [
+      "אין הבדל",
+      "const לא ניתן לשינוי לאחר הגדרה, let כן",
+      "let לא ניתן לשינוי, const כן",
+      "const רק למספרים"
+    ],
+    "correct": 1
+  }
+]

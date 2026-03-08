@@ -33,17 +33,24 @@ namespace WebApiServer.Controllers
             return await service.GetById(id);
         }
 
+        // GET api/<LessonController>/5
+        [HttpGet("course/{id}")]
+        public async Task<List<LessonDto>> GetByCourseId(int id)
+        {
+            return (await service.GetAll()).Where(l=> l.CourseId == id).ToList();
+        }
         // POST api/<LessonController>
         [HttpPost]
         public async Task<LessonDto> Post([FromForm] LessonDto value)
         {
 			if (value.File != null)
 			{
-				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.File.Name, @"\s+", "_");
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 				if (!Directory.Exists(folderPath))
 					Directory.CreateDirectory(folderPath);
 
-				var fileName = Guid.NewGuid().ToString() + "_" + value.File.FileName;
+				var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
 				var fullPath = Path.Combine(folderPath, fileName);
 
 				using (var fs = new FileStream(fullPath, FileMode.Create))
@@ -64,11 +71,12 @@ namespace WebApiServer.Controllers
         {
 			if (value.File != null)
 			{
-				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.File.FileName, @"\s+", "_");
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 				if (!Directory.Exists(folderPath))
 					Directory.CreateDirectory(folderPath);
 
-				var fileName = Guid.NewGuid().ToString() + "_" + value.File.FileName;
+				var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
 				var fullPath = Path.Combine(folderPath, fileName);
 
 				using (var fs = new FileStream(fullPath, FileMode.Create))

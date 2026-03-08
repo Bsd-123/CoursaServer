@@ -40,11 +40,12 @@ namespace WebApiServer.Controllers
         {
 			if (value.FileImage != null)
 			{
-				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.FileImage.FileName, @"\s+", "_");
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 				if (!Directory.Exists(folderPath))
 					Directory.CreateDirectory(folderPath);
 
-				var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+				var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
 				var fullPath = Path.Combine(folderPath, fileName);
 
 				using (var fs = new FileStream(fullPath, FileMode.Create))
@@ -60,8 +61,14 @@ namespace WebApiServer.Controllers
         // PUT api/<OwnerController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = "owner,admin")]
-        async public Task Put(int id, [FromForm] OwnerDto value)
+        async public Task Put(int id, [FromBody] OwnerDto value)
         {
+            if (!ModelState.IsValid)
+            {
+                // זה יחזיר את כל שגיאות ה-Validation ל-Response
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                BadRequest(new { Messages = errors });
+            }
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
             var owner = await service.GetById(id);
@@ -82,11 +89,12 @@ namespace WebApiServer.Controllers
             }
             if (value.FileImage != null)
             {
+                string cleanFileName = System.Text.RegularExpressions.Regex.Replace(value.FileImage.FileName, @"\s+", "_");
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
 
-                var fileName = Guid.NewGuid().ToString() + "_" + value.FileImage.FileName;
+                var fileName = Guid.NewGuid().ToString() + "_" + cleanFileName;
                 var fullPath = Path.Combine(folderPath, fileName);
 
                 using (var fs = new FileStream(fullPath, FileMode.Create))

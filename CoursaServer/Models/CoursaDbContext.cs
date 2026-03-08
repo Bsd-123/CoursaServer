@@ -6,7 +6,7 @@ using Repository.Interfaces;
 
 namespace DBFirst.Models;
 
-public partial class CoursaDbContext : DbContext, IContext
+public partial class CoursaDbContext : DbContext ,IContext
 {
     public CoursaDbContext()
     {
@@ -23,6 +23,8 @@ public partial class CoursaDbContext : DbContext, IContext
 
     public virtual DbSet<Course> Courses { get; set; }
 
+    public virtual DbSet<CourseRating> CourseRatings { get; set; }
+
     public virtual DbSet<Enrollment> Enrollments { get; set; }
 
     public virtual DbSet<Lesson> Lessons { get; set; }
@@ -37,12 +39,17 @@ public partial class CoursaDbContext : DbContext, IContext
 
     public virtual DbSet<UserLogin> UserLogins { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;database=coursaDB;trusted_connection=true;TrustServerCertificate=True");
+    public virtual DbSet<UserSkill> UserSkills { get; set; }
+    
     public async Task SaveAsync()
     {
         await SaveChangesAsync();
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;database=coursaDB;trusted_connection=true;TrustServerCertificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ContentType>(entity =>
@@ -63,11 +70,6 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
                 .HasColumnName("status");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ContentTypes)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__content_t__userI__02084FDA");
         });
 
         modelBuilder.Entity<Coupon>(entity =>
@@ -126,11 +128,13 @@ public partial class CoursaDbContext : DbContext, IContext
                 .HasMaxLength(50)
                 .HasColumnName("name");
             entity.Property(e => e.OwnerId).HasColumnName("ownerId");
+            entity.Property(e => e.Percentage).HasColumnName("percentage");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.SkillId).HasColumnName("skillId");
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
                 .HasColumnName("status");
+            entity.Property(e => e.ValidityDays).HasColumnName("validityDays");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.Courses)
                 .HasForeignKey(d => d.OwnerId)
@@ -143,20 +147,38 @@ public partial class CoursaDbContext : DbContext, IContext
                 .HasConstraintName("FK__course__skillId__2E1BDC42");
         });
 
+        modelBuilder.Entity<CourseRating>(entity =>
+        {
+            entity.HasKey(e => new { e.CourseId, e.UserId }).HasName("PK__CourseRa__1855FD6325258D57");
+
+            entity.ToTable("CourseRating");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.CourseRatings)
+                .HasForeignKey(d => d.CourseId)
+                .HasConstraintName("FK__CourseRat__Cours__43A1090D");
+
+            entity.HasOne(d => d.User).WithMany(p => p.CourseRatings)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__CourseRat__UserI__44952D46");
+        });
+
         modelBuilder.Entity<Enrollment>(entity =>
         {
             entity.ToTable("enrollment");
 
-            entity.Property(e => e.Id)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("id");
-            entity.Property(e => e.CouponId).HasColumnName("couponId");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CouponManagerId).HasColumnName("couponManagerId");
+            entity.Property(e => e.CouponOwnerId).HasColumnName("couponOwnerId");
             entity.Property(e => e.CourseId).HasColumnName("courseId");
             entity.Property(e => e.EndDate)
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
             entity.Property(e => e.FullPrice).HasColumnName("fullPrice");
+            entity.Property(e => e.PaymentNumber).HasMaxLength(100);
             entity.Property(e => e.ReceptionNumber)
                 .HasDefaultValue(0)
                 .HasColumnName("receptionNumber");
@@ -169,8 +191,12 @@ public partial class CoursaDbContext : DbContext, IContext
                 .HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("userId");
 
-            entity.HasOne(d => d.Coupon).WithMany(p => p.Enrollments)
-                .HasForeignKey(d => d.CouponId)
+            entity.HasOne(d => d.CouponManager).WithMany(p => p.EnrollmentCouponManagers)
+                .HasForeignKey(d => d.CouponManagerId)
+                .HasConstraintName("FK__enrollmen__couponManagerId");
+
+            entity.HasOne(d => d.CouponOwner).WithMany(p => p.EnrollmentCouponOwners)
+                .HasForeignKey(d => d.CouponOwnerId)
                 .HasConstraintName("FK__enrollmen__coupo__4222D4EF");
 
             entity.HasOne(d => d.Course).WithMany(p => p.Enrollments)
@@ -241,7 +267,6 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.Property(e => e.PaymentNumber)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.Percentage).HasColumnName("percentage");
             entity.Property(e => e.Status)
                 .HasDefaultValue(true)
                 .HasColumnName("status");
@@ -348,6 +373,28 @@ public partial class CoursaDbContext : DbContext, IContext
             entity.HasOne(d => d.User).WithMany(p => p.UserLogins)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_UserLogins_Users");
+        });
+
+        modelBuilder.Entity<UserSkill>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.SkillId }).HasName("PK__UserSkil__7A72C55400623B2C");
+
+            entity.ToTable("UserSkill");
+
+            entity.Property(e => e.AcquiredDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ProficiencyLevel).HasDefaultValue(1);
+
+            entity.HasOne(d => d.Skill).WithMany(p => p.UserSkills)
+                .HasForeignKey(d => d.SkillId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__UserSkill__Skill__4A4E069C");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserSkills)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__UserSkill__UserI__4959E263");
         });
 
         OnModelCreatingPartial(modelBuilder);

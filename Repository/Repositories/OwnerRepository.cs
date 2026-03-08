@@ -44,9 +44,13 @@ namespace Repository.Repositories
             var Owner =await GetById(id);
             Owner.OwnerName = item.OwnerName;
             Owner.PaymentNumber = item.PaymentNumber;
-            Owner.Percentage = item.Percentage;
             Owner.Image = item.Image;
             Owner.UserId = item.UserId;
+            Owner.Description = item.Description;
+            Owner.Headline = item.Headline;
+            Owner.IsVerified = item.IsVerified;
+            Owner.Status = item.Status;
+            Owner.CreationDate = item.CreationDate;
             await _context.SaveAsync();
         }
     }

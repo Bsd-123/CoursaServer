@@ -19,12 +19,21 @@ namespace Service.Dto
         public int Price { get; set; }
 
         public string? Image { get; set; }
+
         public int SkillId { get; set; }
+
         public int OwnerId { get; set; }
         public OwnerDto? Owner { get; set; }
+
         public SkillDto? Skill { get; set; }
+
         public bool? Status { get; set; }
 
         public IFormFile? FileImage { get; set; }
+
+        public int ValidityDays { get; set; }
+
+        public double Percentage { get; set; }
+
     }
 }

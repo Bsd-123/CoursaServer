@@ -31,7 +31,9 @@ public partial class Coupon
 
     public virtual Course Course { get; set; } = null!;
 
-    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public virtual ICollection<Enrollment> EnrollmentCouponManagers { get; set; } = new List<Enrollment>();
+
+    public virtual ICollection<Enrollment> EnrollmentCouponOwners { get; set; } = new List<Enrollment>();
 
     public virtual User? User { get; set; }
 }

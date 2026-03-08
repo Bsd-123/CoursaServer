@@ -18,4 +18,6 @@ public partial class Skill
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public virtual User? User { get; set; }
+
+    public virtual ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
 }

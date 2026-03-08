@@ -47,6 +47,8 @@ namespace Repository.Repositories
             //User.Password = item.Password;
             User.Role = item.Role;
             User.RegDate = item.RegDate;
+            User.ResetPasswordToken = item.ResetPasswordToken;
+            User.ResetTokenExpires = item.ResetTokenExpires;
             await  _context.SaveAsync();
         }
     }

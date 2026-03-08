@@ -50,6 +50,9 @@ namespace Repository.Repositories
             Lesson.MimeType = item.MimeType;
             Lesson.Idx = item.Idx;
             Lesson.CourseId = item.CourseId;
+            Lesson.DurationSec = item.DurationSec;
+            Lesson.Status = item.Status;
+
             await _context.SaveAsync();
         }
     }

@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore development settings with secrets
+appsettings.Development.json
+/WebApiServer/appsettings.Development.json
+/WebApiServer/appsettings.Development.json
+"WebApiServer/appsettings.Development.json" 

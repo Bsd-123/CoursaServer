@@ -19,11 +19,18 @@ namespace Service.Dto
 
         public double Percentage { get; set; }
 
-        public string? PaymentNumber { get; set; }
+        public string PaymentNumber { get; set; }
+
+        public string? Description { get; set; }
+
+        public bool? IsVerified { get; set; }
+
+        public string? Headline { get; set; }
+
+        public DateTime? CreationDate { get; set; }
 
         public IFormFile? FileImage { get; set; }
-        [SwaggerSchema(ReadOnly = true)]
-        [BindNever]
+ 
         public UserDto? User { get; internal set; }
 
         

@@ -41,7 +41,7 @@ namespace Repository.Repositories
 
         public async Task UpdateItem(int id, Coupon item)
         {
-            var Coupon =await  GetById(id);
+            var Coupon =await GetById(id);
             Coupon.Name = item.Name;
             Coupon.Status = item.Status;
             Coupon.Value = item.Value;
@@ -51,6 +51,9 @@ namespace Repository.Repositories
             Coupon.StartDate = item.StartDate;
             Coupon.IsPercentages = item.IsPercentages;
             Coupon.CourseId = item.CourseId;
+            Coupon.RequirementsJson = item.RequirementsJson;
+            Coupon.Description = item.Description;
+            Coupon.Status = item.Status;
             await  _context.SaveAsync();
         }
     }

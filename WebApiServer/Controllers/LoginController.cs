@@ -6,6 +6,7 @@ using Service.Dto;
 using Service.Interfaces;
 using Service.Services;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,11 +20,13 @@ namespace WebApiServer.Controllers
     {
         private readonly ILogin login;
         private readonly IConfiguration config;
+        private readonly UserToAddingService userToAddingService;
 
-        public LoginController(ILogin login, IConfiguration configuration)
+        public LoginController(ILogin login, IConfiguration configuration, UserToAddingService userToAddingService)
         {
             this.login = login;
             this.config = configuration;
+            this.userToAddingService = userToAddingService;
         }
 
         // POST api/<LoginController>
@@ -38,40 +41,40 @@ namespace WebApiServer.Controllers
             return BadRequest("user not found...");
         }
         [HttpPost("register")] // הכתובת תהיה api/auth/register
-        public async Task<IActionResult> Register([FromBody] User newUser)
+        public async Task<IActionResult> Register([FromBody] UserToAdding newUser)
         {
             if(newUser == null || string.IsNullOrEmpty(newUser.Email) || string.IsNullOrEmpty(newUser.Password))
             {
                 return BadRequest("נתונים לא תקינים להרשמה");
             }
-            if (login.GetByEmail(newUser.Email) != null)
-            {
-                return BadRequest("משתמש עם האימייל הזה כבר קיים");
-            }
+            //to check again!!!
+            //if (login.GetByUserEmail(newUser.Id) != null)
+            //{
+            //    return BadRequest("משתמש עם האימייל הזה כבר קיים");
+            //}
 
             // 2. שמירת המשתמש החדש במסד הנתונים (כולל Hashing לסיסמה!)
-            var registeredUser =await  login.AddUser(newUser);
+            var registeredUser =await userToAddingService.AddItem(newUser);
 
             if (registeredUser == null)
                 return BadRequest("הרישום נכשל או שמשתמש כבר קיים");
 
             // 3. אופציונלי: החזרת טוקן מיד בסיום ההרשמה כדי שהמשתמש יתחבר אוטומטית
-            return Ok(GenerateToken(registeredUser));
+            return Ok(new { user = registeredUser, token = GenerateToken(registeredUser) });
         }
         [HttpGet("GetUserByToken")]
         [Authorize] // זה מבטיח שה-Token נבדק אוטומטית
-        public IActionResult GetUserByToken()
+        public async Task<UserDto> GetUserByToken()
         {
             // המידע על המשתמש (כמו ID או Name) נמצא בתוך ה-Claims של ה-Identity
-            var userName = User.Identity?.Name;
-            Console.WriteLine(userName);
-            if (userName != null)
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (userId != null)
             {
                 // כאן את יכולה לשלוף שוב את פרטי המשתמש מהדיאטבייס במידת הצורך
-                return Ok(new { message = $"Welcome back, {userName}!" });
+                return await login.GetByUserId(userId);
             }
 
-            return Unauthorized("Invalid token");
+            return null;
         }
         //יצירת טוקן
         private string GenerateToken(UserDto user1)

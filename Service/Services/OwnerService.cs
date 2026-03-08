@@ -37,7 +37,6 @@ namespace Service.Services
         public async Task DeleteItem(int id)
         {
             var owner =await repository.GetById(id);
-            owner.Percentage = -1;
             owner.User.Role = "user";
             await repository2.UpdateItem(owner.User.Id, owner.User);
             await repository.UpdateItem(id, owner);

@@ -11,7 +11,7 @@ namespace Service.Interfaces
     public interface ILogin
     {
         public Task<UserDto> Authenticate(UserForLogin user);
-        public Task<UserDto> GetByEmail(string email);
+        public Task<UserDto> GetByUserId(int id);
         public Task<UserDto> AddUser(User item);
     }
 }

@@ -9,7 +9,7 @@ public partial class UserLogin
 
     public int UserId { get; set; }
 
-    public DateTime? LoginDate { get; set; } = DateTime.Now;
+    public DateTime? LoginDate { get; set; }
 
     public string? Ipaddress { get; set; }
 

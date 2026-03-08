@@ -15,6 +15,8 @@ namespace Service.Dto
 
         public string? Image { get; set; }
 
+        public bool? Status { get; set; }
+
         public IFormFile? FileImage { get; set; }
     }
 }

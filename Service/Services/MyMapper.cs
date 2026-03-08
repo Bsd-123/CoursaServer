@@ -11,13 +11,14 @@ namespace Service.Services
 {
     public class MyMapper : Profile
     {
-        string path = Directory.GetCurrentDirectory() + "\\images\\";
         public MyMapper()
         {
             CreateMap<ContentType, ContentTypeDto>();
             CreateMap<ContentTypeDto, ContentType>();
             CreateMap<Owner, OwnerDto>();
             CreateMap<OwnerDto, Owner>();
+            CreateMap<UserToAdding, User>();
+            CreateMap< User,UserToAdding>();
             CreateMap<Skill, SkillDto>();
             CreateMap<SkillDto, Skill>();
             CreateMap<Course, CourseDto>();
@@ -29,8 +30,7 @@ namespace Service.Services
             CreateMap<Progress, ProgressDto>();
             CreateMap<ProgressDto, Progress>();
             CreateMap<Lesson, LessonDto>();
-            CreateMap<LessonDto, Lesson>();
-            
+            CreateMap<LessonDto, Lesson>();       
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<User, UserForLogin>();

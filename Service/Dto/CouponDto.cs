@@ -18,11 +18,6 @@ namespace Service.Dto
 
         public double MinPrice { get; set; }
 
-        
-
-
-
-        
 
     }
 }

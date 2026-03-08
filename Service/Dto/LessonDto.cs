@@ -32,5 +32,7 @@ namespace Service.Dto
         public CourseDto? Course { get; set; } = null!;
 
         public virtual ContentTypeDto? Type { get; set; } = null!;
+
+        public int? DurationSec { get; set; }
     }
 }

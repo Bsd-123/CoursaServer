@@ -44,6 +44,7 @@ namespace Repository.Repositories
             var Skill = await GetById(id);
             Skill.Name = item.Name;
             Skill.Image= item.Image;
+            Skill.Status= item.Status;
             await  _context.SaveAsync();
         }
     }

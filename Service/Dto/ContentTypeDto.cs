@@ -16,5 +16,11 @@ namespace Service.Dto
         public string? DisplayIcon { get; set; }
 
         public IFormFile? FileImage { get; set; }
+
+        public string? DisplayName { get; set; }
+
+        public string? AllowedExtensions { get; set; }
+
+        public bool Status { get; set; }
     }
 }

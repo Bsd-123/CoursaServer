@@ -17,6 +17,8 @@ namespace Service.Dto
 
         public DateTime? LastView { get; set; }
 
+        public bool? IsCompleted { get; set; }
+
         public LessonDto? Lesson { get; set; } = null!;
 
         public UserDto? User { get; set; } = null!;

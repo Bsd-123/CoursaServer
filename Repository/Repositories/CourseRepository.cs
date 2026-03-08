@@ -49,6 +49,9 @@ namespace Repository.Repositories
             Course.Image = item.Image;
             Course.OwnerId = item.OwnerId;
             Course.SkillId = item.SkillId;
+            Course.Status = item.Status;
+            Course.ValidityDays = item.ValidityDays;
+            Course.Percentage = item.Percentage;
             await  _context.SaveAsync();
         }
     }

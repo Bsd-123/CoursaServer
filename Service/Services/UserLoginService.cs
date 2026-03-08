@@ -25,9 +25,9 @@ namespace Service.Services
         {
             return mapper.Map <User,UserDto > ((await _repository.GetAll()).FirstOrDefault(x => x.Email == user.Email && x.Password == user.Password));
         }
-        public async Task<UserDto> GetByEmail(string email)
+        public async Task<UserDto> GetByUserId(int id)
         {
-            return mapper.Map<User, UserDto>((await _repository.GetAll()).FirstOrDefault(x => x.Email == email));
+            return mapper.Map<User, UserDto>((await _repository.GetAll()).FirstOrDefault(x => x.Id == id));
         }
         public async Task<UserDto> AddUser(User item)
         {
